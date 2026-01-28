@@ -14,6 +14,7 @@ export const Pantry = () => {
     {pantryState.map((itemStack, cubbyIndex) => (
       <PantryCubby
         key={cubbyIndex}
+        cubbyIndex={cubbyIndex}
         itemStack={itemStack}
       />
     ))}

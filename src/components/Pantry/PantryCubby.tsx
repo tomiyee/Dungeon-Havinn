@@ -1,47 +1,43 @@
-import { Badge, Box, Typography, type SxProps } from "@mui/material";
-import { useCustomItemName } from "../../hooks/useCustomItemNames";
-import type { ItemStack } from "../../classes/ItemStack";
-import { STATIC_ITEM_PROPERTIES } from "../../constants/items";
+import { Box, type SxProps } from "@mui/material";
+import { ItemStackUtils, type ItemStack } from "../../classes/ItemStack";
+import { useDroppable } from "@dnd-kit/core";
+import { ItemStackDisplay } from "../ItemStackDisplay";
+import type { DroppableData } from "../../constants/droppableData";
+import { useCallback } from "react";
+import { useSetCubby } from "../../hooks/useSetCubby";
 
 type PantryCubbyProps = {
   itemStack: ItemStack;
+  cubbyIndex: number;
+  onDrop?: (itemStack: ItemStack) => void;
 }
 
 export const PantryCubby: React.FC<PantryCubbyProps> = (props) => {
-  const { itemStack } = props;
-  const { item, quantity } = itemStack;
-  const itemName = useCustomItemName(item?.itemId);
+  const { itemStack, cubbyIndex } = props;
 
-  if (item?.itemId === undefined) {
-    return <Box sx={styles.cubby} />;
+  const setCubbyState = useSetCubby();
+
+  const droppableData: DroppableData = {
+    type: "pantry-cubby",
+    cubbyIndex,
   }
 
-  const staticItemData = STATIC_ITEM_PROPERTIES[item.itemId];
+  const { setNodeRef } = useDroppable({ id: cubbyIndex, data: droppableData });
 
 
-  return <Box sx={styles.cubby}>
-    <Box flex={1} display='flex' width={"100%"} alignItems="center" justifyContent='center'>
-      <Badge
-        badgeContent={quantity}
-        color="primary"
-      >
-        <img src={staticItemData.icon} alt={itemName} width={32} height={32} />
-      </Badge>
-    </Box>
-    <Box flex={0} display='flex' justifyContent='center'>
-      <Typography variant='body1'>
-        {itemName}
-      </Typography>
-    </Box>
+
+  const onMoved = useCallback(() => {
+    setCubbyState(cubbyIndex, ItemStackUtils.newEmpty());
+  }, [cubbyIndex, setCubbyState]);
+
+  return <Box sx={styles.cubby} ref={setNodeRef}>
+    <ItemStackDisplay itemStack={itemStack} onMoved={onMoved} />
   </Box>;
 }
 
 const styles: Record<string, SxProps> = {
   cubby: {
     backgroundColor: "beige",
-    flexDirection: 'column',
-    display: 'flex',
-    alignContent: 'center',
     width: "80px",
     height: "80px",
   }

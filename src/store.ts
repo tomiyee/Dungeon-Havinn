@@ -6,10 +6,13 @@ import { ItemUtils } from "./classes/Item";
 export interface DungeonHavinnState {
   customItemNames: Record<ItemId, string>;
   pantry: ItemStack[];
+  actions: {
+    setCubby: (cubbyIndex: number, itemStack: ItemStack) => void;
+  }
 }
 
 /** Zustand store */
-export const useDungeonHavinnStore = create<DungeonHavinnState>(() => ({
+export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
   customItemNames: {
     [ItemId.MUSHROOM]: 'Mushroom',
     [ItemId.ONION]: 'Onion',
@@ -26,4 +29,14 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>(() => ({
     ItemStackUtils.newEmpty(),
     ItemStackUtils.newEmpty(),
   ],
+
+  actions: {
+    setCubby(cubbyIndex: number, itemStack: ItemStack) {
+      set((state) => ({
+        pantry: state.pantry.map((cubby, index) =>
+          index === cubbyIndex ? itemStack : cubby
+        ),
+      }));
+    }
+  }
 }));
