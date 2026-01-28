@@ -29,6 +29,10 @@ function App() {
       case 'pantry-cubby': {
         const cubbyStack = useDungeonHavinnStore.getState().pantry[dropData.cubbyIndex];
         const activeStack = activeData.itemStack;
+        // Ignore dropping onto self
+        if (activeStack.stackId === cubbyStack.stackId) {
+          return;
+        }
         const combinedStack = ItemStackUtils.combine(cubbyStack, activeStack);
         if (combinedStack === null) {
           return;

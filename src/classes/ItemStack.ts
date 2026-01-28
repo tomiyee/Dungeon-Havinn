@@ -16,6 +16,9 @@ export class ItemStackUtils {
   }
 
   static combine(stackA: ItemStack, stackB: ItemStack): ItemStack | null {
+    if (stackA.stackId === stackB.stackId) {
+      return stackA;
+    }
     if (stackA.item === null) {
       return stackB;
     }
