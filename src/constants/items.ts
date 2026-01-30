@@ -2,6 +2,8 @@ import mushroomSource from '../assets/mushroom.png'; // www.freepik.com
 import onionSource from '../assets/onion.png'; // www.freepik.com
 import garlicSource from '../assets/garlic.png'; // www.freepik.com
 
+export const ITEM_STACK_WIDTH = 80;
+
 export const ItemId = {
   MUSHROOM: 'MUSHROOM',
   ONION: 'ONION',

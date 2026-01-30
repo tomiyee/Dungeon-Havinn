@@ -1,7 +1,7 @@
 import { Box, Badge, Typography, type SxProps } from "@mui/material";
 import type { ItemStack } from "../classes/ItemStack";
 import { useCustomItemName } from "../hooks/useCustomItemNames";
-import { STATIC_ITEM_PROPERTIES } from "../constants/items";
+import { ITEM_STACK_WIDTH, STATIC_ITEM_PROPERTIES } from "../constants/items";
 import { useDraggable } from "@dnd-kit/core";
 import type { DraggableData } from "../constants/draggableData";
 
@@ -55,7 +55,7 @@ const styles: Record<string, SxProps> = {
     flexDirection: 'column',
     display: 'flex',
     alignContent: 'center',
-    width: "80px",
-    height: "80px",
+    width: `${ITEM_STACK_WIDTH}px`,
+    height: `${ITEM_STACK_WIDTH}px`,
   }
 }

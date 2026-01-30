@@ -6,8 +6,10 @@ import { ItemUtils } from "./classes/Item";
 export interface DungeonHavinnState {
   customItemNames: Record<ItemId, string>;
   pantry: ItemStack[];
+  cuttingBoard: ItemStack;
   actions: {
     setCubby: (cubbyIndex: number, itemStack: ItemStack) => void;
+    setCuttingBoard: (itemStack: ItemStack) => void;
   }
 }
 
@@ -30,6 +32,8 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
     ItemStackUtils.newEmpty(),
   ],
 
+  cuttingBoard: ItemStackUtils.newEmpty(),
+
   actions: {
     setCubby(cubbyIndex: number, itemStack: ItemStack) {
       set((state) => ({
@@ -37,6 +41,13 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
           index === cubbyIndex ? itemStack : cubby
         ),
       }));
+    },
+    setCuttingBoard(itemStack: ItemStack) {
+      set(() => ({
+        cuttingBoard: itemStack,
+      }));
     }
   }
 }));
+
+export const storeActions = useDungeonHavinnStore.getState().actions;

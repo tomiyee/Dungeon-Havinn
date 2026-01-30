@@ -26,7 +26,5 @@ export const PantryCubby: React.FC<PantryCubbyProps> = (props) => {
 const styles: Record<string, SxProps> = {
   cubby: {
     backgroundColor: "beige",
-    width: "80px",
-    height: "80px",
   }
 }
