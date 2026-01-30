@@ -1,10 +1,7 @@
 import { Box, type SxProps } from "@mui/material";
-import { ItemStackUtils, type ItemStack } from "../../classes/ItemStack";
-import { useDroppable } from "@dnd-kit/core";
-import { ItemStackDisplay } from "../ItemStackDisplay";
-import type { DroppableData } from "../../constants/droppableData";
-import { useCallback } from "react";
+import { type ItemStack } from "../../classes/ItemStack";
 import { useSetCubby } from "../../hooks/useSetCubby";
+import { ItemSlot } from "../ItemSlot";
 
 type PantryCubbyProps = {
   itemStack: ItemStack;
@@ -17,21 +14,12 @@ export const PantryCubby: React.FC<PantryCubbyProps> = (props) => {
 
   const setCubbyState = useSetCubby();
 
-  const droppableData: DroppableData = {
-    type: "pantry-cubby",
-    cubbyIndex,
-  }
-
-  const { setNodeRef } = useDroppable({ id: cubbyIndex, data: droppableData });
-
-
-
-  const onMoved = useCallback(() => {
-    setCubbyState(cubbyIndex, ItemStackUtils.newEmpty());
-  }, [cubbyIndex, setCubbyState]);
-
-  return <Box sx={styles.cubby} ref={setNodeRef}>
-    <ItemStackDisplay itemStack={itemStack} onMoved={onMoved} />
+  return <Box sx={styles.cubby}>
+    <ItemSlot
+      slotId={`pantry-cubby-${cubbyIndex}`}
+      itemStack={itemStack}
+      setItemStack={(newStack) => setCubbyState(cubbyIndex, newStack)}
+    />
   </Box>;
 }
 

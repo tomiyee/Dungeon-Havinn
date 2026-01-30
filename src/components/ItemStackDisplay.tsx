@@ -7,20 +7,18 @@ import type { DraggableData } from "../constants/draggableData";
 
 type PantryCubbyProps = {
   itemStack: ItemStack;
-  /** Callback for when the item has been moved away */
-  onMoved: () => void;
+  setItemStack: (itemStack: ItemStack) => void;
 }
 
 export const ItemStackDisplay = (props: PantryCubbyProps) => {
-  const { itemStack, onMoved } = props;
+  const { itemStack, setItemStack } = props;
   const { item, quantity } = itemStack;
   const itemName = useCustomItemName(item?.itemId);
 
 
   const draggableData: DraggableData = {
-    type: 'item-stack',
     itemStack,
-    onMoved,
+    setItemStack
   };
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -46,7 +44,7 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
       </Badge>
     </Box>
     <Box flex={0} display='flex' justifyContent='center'>
-      <Typography variant='body1'>
+      <Typography variant='body1' color='black'>
         {itemName}
       </Typography>
     </Box>

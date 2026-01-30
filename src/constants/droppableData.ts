@@ -1,10 +1,7 @@
+import type { ItemStack } from "../classes/ItemStack";
 
 
-
-type PantryCubbyDropData = {
-  type: 'pantry-cubby';
-  cubbyIndex: number;
-}
-
-
-export type DroppableData = PantryCubbyDropData;
+export type DroppableData = {
+  itemStack: ItemStack;
+  setItemStack: (itemStack: ItemStack) => void;
+};
