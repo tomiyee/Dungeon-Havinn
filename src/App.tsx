@@ -4,17 +4,18 @@ import { Pantry } from './components/Pantry/Pantry';
 import type { DroppableData } from './constants/droppableData';
 import type { DraggableData } from './constants/draggableData';
 import { ItemStackUtils } from './classes/ItemStack';
+import { Box } from '@mui/material';
+import { CuttingBoard } from './components/CuttingBoard';
 
 function App() {
   const handleDragEnd = (event: DragEndEvent) => {
     if (!event.over) {
       return;
     }
-    console.log("Yes")
 
     const activeData = event.active.data.current as DraggableData | undefined;
     const dropData = event.over.data.current as DroppableData | undefined;
-    console.log(activeData, dropData);
+
     if (dropData === undefined) {
       console.warn("No drop data");
       return;
@@ -24,20 +25,22 @@ function App() {
       return;
     }
 
-    const combinedStack = ItemStackUtils.combine(dropData.itemStack, activeData.itemStack);
-    console.log("Combined stack:", combinedStack);
-    if (combinedStack === null) {
+    const combinationResult = ItemStackUtils.combine(activeData.itemStack, dropData.itemStack, dropData.maxCapacity);
+
+    if (combinationResult === null) {
       return;
     }
+    const { remainingStack, resultStack } = combinationResult;
 
-    activeData.setItemStack(ItemStackUtils.newEmpty());
-    dropData.setItemStack(combinedStack);
+    activeData.setItemStack(remainingStack);
+    dropData.setItemStack(resultStack);
   }
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div >
+      <Box display="flex">
         <Pantry />
-      </div>
+        <CuttingBoard />
+      </Box>
     </DndContext>
   )
 }

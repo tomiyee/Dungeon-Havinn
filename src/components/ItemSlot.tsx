@@ -13,15 +13,17 @@ type ItemSlotProps = {
   slotId: string;
   itemStack: ItemStack;
   setItemStack: (itemStack: ItemStack) => void;
+  maxCapacity?: number;
 }
 
 export const ItemSlot = (props: ItemSlotProps) => {
-  const { slotId, itemStack, setItemStack } = props;
+  const { slotId, itemStack, setItemStack, maxCapacity } = props;
 
   const droppableData: DroppableData = useMemo(() => ({
     itemStack,
-    setItemStack
-  }), [itemStack, setItemStack]);
+    setItemStack,
+    maxCapacity
+  }), [itemStack, setItemStack, maxCapacity]);
 
   const { setNodeRef, active } = useDroppable({ id: slotId, data: droppableData });
 

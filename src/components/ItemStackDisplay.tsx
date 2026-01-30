@@ -37,7 +37,7 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
   return (<Box sx={styles.itemStack} ref={setNodeRef} {...listeners} {...attributes} style={style}>
     <Box flex={1} display='flex' width={"100%"} alignItems="center" justifyContent='center'>
       <Badge
-        badgeContent={quantity}
+        badgeContent={quantity > 1 ? quantity : undefined}
         color="primary"
       >
         <img src={staticItemData.icon} alt={itemName} width={32} height={32} />
