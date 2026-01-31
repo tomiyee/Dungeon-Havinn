@@ -7,6 +7,8 @@ import { ItemStackUtils } from './classes/ItemStack';
 import { Box } from '@mui/material';
 import { CuttingBoard } from './components/CuttingBoard';
 import { Credits } from './components/Credits';
+import { CampfirePot } from './components/CampfirePot';
+import { WaterSpout } from './components/WaterSpout';
 
 function App() {
   const handleDragEnd = (event: DragEndEvent) => {
@@ -25,8 +27,13 @@ function App() {
       console.warn("No active data");
       return;
     }
+    if (!dropData.canReceiveItemStack(activeData.itemStack)) {
+      return;
+    }
 
-    const combinationResult = ItemStackUtils.combine(activeData.itemStack, dropData.itemStack, dropData.maxCapacity);
+    const combine = dropData.combineItems ?? ItemStackUtils.combine;
+
+    const combinationResult = combine(activeData.itemStack, dropData.itemStack, dropData.maxCapacity);
 
     if (combinationResult === null) {
       return;
@@ -41,6 +48,8 @@ function App() {
       <Box display="flex">
         <Pantry />
         <CuttingBoard />
+        <CampfirePot />
+        <WaterSpout />
       </Box>
       <Credits />
     </DndContext>

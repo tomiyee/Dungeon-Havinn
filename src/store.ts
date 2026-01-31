@@ -7,6 +7,7 @@ export interface DungeonHavinnState {
   customItemNames: Record<ItemId, string>;
   pantry: ItemStack[];
   cuttingBoard: ItemStack;
+  campfirePot: ItemStack;
   actions: {
     setCubby: (cubbyIndex: number, itemStack: ItemStack) => void;
     setCuttingBoard: (itemStack: ItemStack) => void;
@@ -19,7 +20,10 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
     [ItemId.MUSHROOM]: 'Mushroom',
     [ItemId.ONION]: 'Onion',
     [ItemId.GARLIC]: 'Garlic',
+    [ItemId.CAMPFIRE_POT]: "",
   },
+
+  campfirePot: ItemStackUtils.new(ItemUtils.new(ItemId.CAMPFIRE_POT)),
 
   pantry: [
     ItemStackUtils.new(ItemUtils.new(ItemId.MUSHROOM), 3),

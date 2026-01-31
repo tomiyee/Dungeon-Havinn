@@ -9,9 +9,14 @@ export type ItemStack = {
 }
 
 export class ItemStackUtils {
-  static new(item: Item, quantity: number): ItemStack {
+  static addWater(itemStack: ItemStack): ItemStack {
+    return { ...itemStack, item: itemStack.item === null ? null : { ...itemStack.item, watered: true } }
+  }
+
+  static new(item: Item, quantity = 1): ItemStack {
     return { stackId: crypto.randomUUID(), item, quantity }
   }
+
   static newEmpty(): ItemStack {
     return { stackId: crypto.randomUUID(), item: null, quantity: 0 }
   }
