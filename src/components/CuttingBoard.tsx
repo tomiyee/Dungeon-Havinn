@@ -1,35 +1,49 @@
-import { Box, Button, LinearProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { ItemSlot } from "./ItemSlot";
-import { storeActions, useDungeonHavinnStore, type DungeonHavinnState } from "../store";
-
+import { useDungeonHavinnStore, type DungeonHavinnState } from "../store";
+import useSound from "use-sound";
+import knifeSound1 from "../assets/sounds/knife-throw-1.mp3";
+import knifeSound2 from "../assets/sounds/knife-throw-2.mp3";
 
 const selectCuttingBoardSlot = (state: DungeonHavinnState) => state.cuttingBoard;
 
 const increaseChopProgress = () => {
   const currentItem = useDungeonHavinnStore.getState().cuttingBoard;
-  storeActions.setCuttingBoard({
-    ...currentItem,
-    item: currentItem.item === null ? null : {
-      ...currentItem.item,
-      choppedProgress: Math.min(100, (currentItem.item?.choppedProgress || 0) + 5)
+  useDungeonHavinnStore.setState(() => ({
+    cuttingBoard: {
+      ...currentItem,
+      item: currentItem.item === null ? null : {
+        ...currentItem.item,
+        choppedProgress: Math.min(100, (currentItem.item?.choppedProgress || 0) + 5)
+      }
     }
-  })
+  }))
 }
+
 
 export const CuttingBoard: React.FC = () => {
   const cuttingBoardSlot = useDungeonHavinnStore(selectCuttingBoardSlot);
   const hasItem = cuttingBoardSlot.item !== null && cuttingBoardSlot.quantity > 0;
+
+  const [playKnifeSound1] = useSound(knifeSound1)
+  const [playKnifeSound2] = useSound(knifeSound2)
+
   return <Box flexDirection={'column'} display='flex' alignItems='center' gap={1} padding={1}>
-    <Box height={20} width={"90%"} visibility={hasItem ? 'visible' : 'hidden'}>
-      <LinearProgress sx={{ height: 10 }} variant="determinate" value={cuttingBoardSlot.item?.choppedProgress ?? 0} />
-    </Box>
     <ItemSlot
       slotId="cutting-board"
       itemStack={cuttingBoardSlot}
-      setItemStack={storeActions.setCuttingBoard}
+      setItemStack={(itemStack) => useDungeonHavinnStore.setState({ cuttingBoard: itemStack })}
       maxCapacity={1}
     />
     <Box sx={{ width: '100%', height: 10, backgroundColor: 'orange' }} />
-    <Button variant='contained' onClick={increaseChopProgress}>Chop</Button>
+    <Button variant='contained' onClick={() => {
+      if (!hasItem)
+        return;
+      if (Math.random() > 0.5)
+        playKnifeSound1()
+      else
+        playKnifeSound2();
+      increaseChopProgress();
+    }}>Chop</Button>
   </Box>
 }

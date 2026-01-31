@@ -12,6 +12,7 @@ export const Credits = () => {
         <DialogTitle>Game Credits</DialogTitle>
         <DialogContent>
           <Typography>Icon made by Freepik - freepik.com</Typography>
+          <Typography>Sound effects by Pixabay - pixabay.com</Typography>
         </DialogContent>
 
         <DialogActions>
