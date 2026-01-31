@@ -36,14 +36,17 @@ export const CuttingBoard: React.FC = () => {
       maxCapacity={1}
     />
     <Box sx={{ width: '100%', height: 10, backgroundColor: 'orange' }} />
-    <Button variant='contained' onClick={() => {
-      if (!hasItem)
-        return;
-      if (Math.random() > 0.5)
-        playKnifeSound1()
-      else
-        playKnifeSound2();
-      increaseChopProgress();
-    }}>Chop</Button>
+    <Button
+      variant="contained"
+      disabled={!hasItem} // Button is disabled when there is no item
+      onClick={() => {
+        if (!hasItem) return;
+        if (Math.random() > 0.5) playKnifeSound1();
+        else playKnifeSound2();
+        increaseChopProgress();
+      }}
+    >
+      Chop
+    </Button>
   </Box>
 }
