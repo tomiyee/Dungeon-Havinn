@@ -63,3 +63,5 @@ export class ItemStackUtils {
     }
   }
 }
+
+export const EMPTY_ITEM_STACK: ItemStack = Object.freeze(ItemStackUtils.newEmpty());

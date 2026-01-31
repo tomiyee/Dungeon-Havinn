@@ -6,6 +6,7 @@ import type { DraggableData } from './constants/draggableData';
 import { ItemStackUtils } from './classes/ItemStack';
 import { Box } from '@mui/material';
 import { CuttingBoard } from './components/CuttingBoard';
+import { Credits } from './components/Credits';
 
 function App() {
   const handleDragEnd = (event: DragEndEvent) => {
@@ -41,6 +42,7 @@ function App() {
         <Pantry />
         <CuttingBoard />
       </Box>
+      <Credits />
     </DndContext>
   )
 }
