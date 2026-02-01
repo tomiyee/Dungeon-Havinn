@@ -1,17 +1,16 @@
-import { Box } from "@mui/material";
-import { ItemStackUtils, type ItemStack } from "../classes/ItemStack";
-import { ItemStackDisplay } from "./ItemStackDisplay";
-import { useDroppable } from "@dnd-kit/core";
-import { useMemo } from "react";
-import type { DroppableData } from "../constants/droppableData";
-import type { CSSProperties } from "@mui/material/styles";
-import { ITEM_STACK_WIDTH, ItemId } from "../constants/items";
+import { Box } from '@mui/material';
+import { ItemStackUtils, type ItemStack } from '../classes/ItemStack';
+import { ItemStackDisplay } from './ItemStackDisplay';
+import { useDroppable } from '@dnd-kit/core';
+import { useMemo } from 'react';
+import type { DroppableData } from '../constants/droppableData';
+import type { CSSProperties } from '@mui/material/styles';
+import { ITEM_STACK_WIDTH, ItemId } from '../constants/items';
 
 /** The rule that most item slots will follow */
 const generalSlotRule = (itemStack: ItemStack) => {
   return itemStack.item?.itemId !== ItemId.CAMPFIRE_POT;
 };
-
 
 type ItemSlotProps = {
   /** Needs to be globally unique */
@@ -22,20 +21,32 @@ type ItemSlotProps = {
   canReceiveItems?: (itemStack: ItemStack) => boolean;
   /** Override of the default behavior for moving a stack onto this item slot */
   combineItems?: typeof ItemStackUtils.combine;
-}
+};
 
 export const ItemSlot = (props: ItemSlotProps) => {
-  const { slotId, itemStack, setItemStack, maxCapacity, canReceiveItems = generalSlotRule, combineItems } = props;
-  const droppableData: DroppableData = useMemo(() => ({
+  const {
+    slotId,
     itemStack,
     setItemStack,
-    canReceiveItemStack: canReceiveItems,
+    maxCapacity,
+    canReceiveItems = generalSlotRule,
     combineItems,
-    maxCapacity
-  }), [itemStack, setItemStack, canReceiveItems, combineItems, maxCapacity]);
+  } = props;
+  const droppableData: DroppableData = useMemo(
+    () => ({
+      itemStack,
+      setItemStack,
+      canReceiveItemStack: canReceiveItems,
+      combineItems,
+      maxCapacity,
+    }),
+    [itemStack, setItemStack, canReceiveItems, combineItems, maxCapacity],
+  );
 
-  const { setNodeRef, active } = useDroppable({ id: slotId, data: droppableData });
-
+  const { setNodeRef, active } = useDroppable({
+    id: slotId,
+    data: droppableData,
+  });
 
   /** True if the currently dragged item can be dropped into this slot */
   const showSlotReceivable = useMemo((): boolean => {
@@ -55,27 +66,24 @@ export const ItemSlot = (props: ItemSlotProps) => {
       sx={[
         styles.itemSlot,
         hasItem && styles.pointer,
-        showSlotReceivable && styles.itemSlotHovered
+        showSlotReceivable && styles.itemSlotHovered,
       ]}
     >
-      <ItemStackDisplay
-        itemStack={itemStack}
-        setItemStack={setItemStack}
-      />
+      <ItemStackDisplay itemStack={itemStack} setItemStack={setItemStack} />
     </Box>
   );
-}
+};
 
 const styles = {
   itemSlot: {
     width: `${ITEM_STACK_WIDTH}px`,
     height: `${ITEM_STACK_WIDTH}px`,
-    border: "2px dashed #0000",
+    border: '2px dashed #0000',
   },
   pointer: {
-    cursor: "pointer",
+    cursor: 'pointer',
   },
   itemSlotHovered: {
-    border: "2px dashed #000",
-  }
+    border: '2px dashed #000',
+  },
 } satisfies Record<string, CSSProperties>;

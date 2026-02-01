@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { ItemId } from "./constants/items";
-import { type ItemStack, ItemStackUtils } from "./classes/ItemStack";
-import { ItemUtils } from "./classes/Item";
+import { create } from 'zustand';
+import { ItemId } from './constants/items';
+import { type ItemStack, ItemStackUtils } from './classes/ItemStack';
+import { ItemUtils } from './classes/Item';
 
 export interface DungeonHavinnState {
   customItemNames: Record<ItemId, string>;
@@ -11,7 +11,7 @@ export interface DungeonHavinnState {
   actions: {
     setCubby: (cubbyIndex: number, itemStack: ItemStack) => void;
     setCuttingBoard: (itemStack: ItemStack) => void;
-  }
+  };
 }
 
 /** Zustand store */
@@ -20,7 +20,7 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
     [ItemId.MUSHROOM]: 'Mushroom',
     [ItemId.ONION]: 'Onion',
     [ItemId.GARLIC]: 'Garlic',
-    [ItemId.CAMPFIRE_POT]: "",
+    [ItemId.CAMPFIRE_POT]: '',
   },
 
   campfirePot: ItemStackUtils.new(ItemUtils.new(ItemId.CAMPFIRE_POT)),
@@ -41,17 +41,15 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
   actions: {
     setCubby(cubbyIndex: number, itemStack: ItemStack) {
       set((state) => ({
-        pantry: state.pantry.map((cubby, index) =>
-          index === cubbyIndex ? itemStack : cubby
-        ),
+        pantry: state.pantry.map((cubby, index) => (index === cubbyIndex ? itemStack : cubby)),
       }));
     },
     setCuttingBoard(itemStack: ItemStack) {
       set(() => ({
         cuttingBoard: itemStack,
       }));
-    }
-  }
+    },
+  },
 }));
 
 export const storeActions = useDungeonHavinnStore.getState().actions;

@@ -1,10 +1,16 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from '@mui/material';
 import infoIcon from '../assets/info.png'; // www.freepik.com
-import { useState } from "react";
+import { useState } from 'react';
 
 export const Credits = () => {
   const [showCredits, setShowCredits] = useState(false);
-
 
   return (
     <>
@@ -19,10 +25,13 @@ export const Credits = () => {
           <Button onClick={() => setShowCredits(false)}>Close</Button>
         </DialogActions>
       </Dialog>
-      <Button variant="contained" onClick={() => setShowCredits(true)} sx={{ position: "absolute", bottom: 20, right: 20 }}>
-        <img src={infoIcon} alt={"Credits"} height={30} />
+      <Button
+        variant="contained"
+        onClick={() => setShowCredits(true)}
+        sx={{ position: 'absolute', bottom: 20, right: 20 }}
+      >
+        <img src={infoIcon} alt="Credits" height={30} />
       </Button>
     </>
-
-  )
-}
+  );
+};

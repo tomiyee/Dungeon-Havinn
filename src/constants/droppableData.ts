@@ -1,5 +1,4 @@
-import type { ItemStack, ItemStackUtils } from "../classes/ItemStack";
-
+import type { ItemStack, ItemStackUtils } from '../classes/ItemStack';
 
 export type DroppableData = {
   itemStack: ItemStack;

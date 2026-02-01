@@ -20,11 +20,11 @@ function App() {
     const dropData = event.over.data.current as DroppableData | undefined;
 
     if (dropData === undefined) {
-      console.warn("No drop data");
+      console.warn('No drop data');
       return;
     }
     if (activeData === undefined) {
-      console.warn("No active data");
+      console.warn('No active data');
       return;
     }
     if (!dropData.canReceiveItemStack(activeData.itemStack)) {
@@ -33,7 +33,11 @@ function App() {
 
     const combine = dropData.combineItems ?? ItemStackUtils.combine;
 
-    const combinationResult = combine(activeData.itemStack, dropData.itemStack, dropData.maxCapacity);
+    const combinationResult = combine(
+      activeData.itemStack,
+      dropData.itemStack,
+      dropData.maxCapacity,
+    );
 
     if (combinationResult === null) {
       return;
@@ -42,10 +46,10 @@ function App() {
 
     activeData.setItemStack(remainingStack);
     dropData.setItemStack(resultStack);
-  }
+  };
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <Box display="flex" alignItems='end'>
+      <Box display="flex" alignItems="end">
         <Pantry />
         <CuttingBoard />
         <CampfirePot />
@@ -53,7 +57,7 @@ function App() {
       </Box>
       <Credits />
     </DndContext>
-  )
+  );
 }
 
 export default App;

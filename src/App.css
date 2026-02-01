@@ -2,7 +2,7 @@
   width: 100vw;
   height: 100vh;
   /* New background styling */
-  background-image: url("./assets/seamless-grassy-stone.jpg");
+  background-image: url('./assets/seamless-grassy-stone.jpg');
   background-repeat: repeat; /* repeats in both directions */
   background-size: 20%; /* keep original size */
 }
