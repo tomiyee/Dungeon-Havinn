@@ -20,7 +20,7 @@ export class ItemUtils {
   }
 
   static isWashable(item: Item | null): boolean {
-    return item !== null && (item.itemId === ItemId.MUSHROOM || item.itemId === ItemId.CAMPFIRE_POT)
+    return item !== null && !item.watered && (item.itemId === ItemId.MUSHROOM || item.itemId === ItemId.CAMPFIRE_POT)
   }
 
   static getIcon(item: Item | null): string {
