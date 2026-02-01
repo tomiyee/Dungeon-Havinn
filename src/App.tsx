@@ -1,4 +1,4 @@
-import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+import { DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import './App.css';
 import { Pantry } from './components/Pantry/Pantry';
 import type { DroppableData } from './constants/droppableData';
@@ -11,6 +11,14 @@ import { CampfirePot } from './components/CampfirePot';
 import { WaterSpout } from './components/WaterSpout';
 
 function App() {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // pixels before drag starts
+      },
+    }),
+  );
+
   const handleDragEnd = (event: DragEndEvent) => {
     if (!event.over) {
       return;
@@ -48,7 +56,7 @@ function App() {
     dropData.setItemStack(resultStack);
   };
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
       <Box display="flex" alignItems="end">
         <Pantry />
         <CuttingBoard />

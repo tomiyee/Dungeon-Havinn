@@ -1,11 +1,14 @@
-import { Box, Badge, Typography, type SxProps, LinearProgress } from '@mui/material';
+import { Box, Badge, Typography, type SxProps, LinearProgress, TextField } from '@mui/material';
 import type { ItemStack } from '../classes/ItemStack';
 import { useCustomItemName } from '../hooks/useCustomItemNames';
-import { ITEM_STACK_WIDTH } from '../constants/items';
+import { ITEM_STACK_WIDTH, ItemId } from '../constants/items';
 import { useDraggable } from '@dnd-kit/core';
 import type { DraggableData } from '../constants/draggableData';
 import { isDefined } from '../utils';
 import { ItemUtils } from '../classes/Item';
+import { useState } from 'react';
+
+const MAX_ITEM_NAME_LENGTH = 8;
 
 type PantryCubbyProps = {
   itemStack: ItemStack;
@@ -15,16 +18,19 @@ type PantryCubbyProps = {
 export const ItemStackDisplay = (props: PantryCubbyProps) => {
   const { itemStack, setItemStack } = props;
   const { item, quantity } = itemStack;
-  const itemName = useCustomItemName(item?.itemId);
+  const { customItemName, setCustomItemName } = useCustomItemName(item?.itemId);
 
   const draggableData: DraggableData = {
     itemStack,
     setItemStack,
   };
 
+  const [editing, setEditing] = useState(false);
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: itemStack.stackId,
     data: draggableData,
+    disabled: editing,
   });
 
   const style = transform
@@ -32,6 +38,7 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
       }
     : undefined;
+
   if (item?.itemId === undefined) {
     return <Box sx={styles.itemStack} />;
   }
@@ -56,9 +63,9 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
         <Badge badgeContent={quantity > 1 ? quantity : undefined} color="primary">
           <img
             src={icon}
-            alt={itemName}
-            width={itemName !== '' ? 40 : 70}
-            height={itemName !== '' ? 40 : 70}
+            alt={customItemName ?? 'Unnamed Item'}
+            width={customItemName !== null ? 40 : 70}
+            height={customItemName !== null ? 40 : 70}
           />
         </Badge>
         {hasBoiledProgress && (
@@ -78,20 +85,83 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
           />
         )}
       </Box>
-      {itemName !== '' && (
+      {customItemName !== null && (
         <Box flex={0} display="flex" justifyContent="center">
-          <Typography
-            variant="body1"
-            color="black"
-            sx={{ backgroundColor: '#fffa', px: 0.25, borderRadius: 1 }}
-          >
-            {itemName}
-          </Typography>
+          {editing ? (
+            <ItemNameInput
+              itemId={item.itemId}
+              onCommit={(newName) => {
+                setCustomItemName(newName);
+                setEditing(false);
+              }}
+            />
+          ) : (
+            <Typography
+              variant="body1"
+              color="black"
+              sx={{
+                backgroundColor: '#fffa',
+                px: 0.25,
+                borderRadius: 1,
+                ':hover': { backgroundColor: `#fffd` },
+              }}
+              onClick={() => setEditing(true)}
+            >
+              {customItemName}
+            </Typography>
+          )}
         </Box>
       )}
     </Box>
   );
 };
+
+type ItemNameInputProps = {
+  itemId: ItemId;
+  onCommit: (itemName: string) => void;
+};
+
+const ItemNameInput = (props: ItemNameInputProps) => {
+  const { itemId, onCommit } = props;
+
+  const { customItemName } = useCustomItemName(itemId);
+
+  const [wipName, setWipName] = useState(customItemName ?? '');
+
+  return (
+    <TextField
+      autoFocus
+      value={wipName}
+      onChange={(e) => setWipName(e.target.value.slice(0, MAX_ITEM_NAME_LENGTH))}
+      onBlur={() => {
+        // Resets the item name when the user commits an empty string
+        if (validItemName(wipName)) {
+          onCommit(wipName);
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          if (validItemName(wipName)) {
+            onCommit(wipName);
+          }
+        }
+      }}
+      style={{ background: '#fff7' }}
+      // Removes the crazy amount of vertical padding
+      inputProps={{
+        style: {
+          padding: 0,
+          paddingLeft: 6,
+          paddingRight: 6,
+          fontSize: '0.8em',
+        },
+      }}
+    />
+  );
+};
+
+const validItemName = (itemName: string) => itemName !== '';
+
 const styles = {
   itemStack: {
     flexDirection: 'column',

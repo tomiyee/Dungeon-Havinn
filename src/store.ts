@@ -4,7 +4,7 @@ import { type ItemStack, ItemStackUtils } from './classes/ItemStack';
 import { ItemUtils } from './classes/Item';
 
 export interface DungeonHavinnState {
-  customItemNames: Record<ItemId, string>;
+  customItemNames: Record<ItemId, string | null>;
   pantry: ItemStack[];
   cuttingBoard: ItemStack;
   campfirePot: ItemStack;
@@ -20,7 +20,7 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
     [ItemId.MUSHROOM]: 'Mushroom',
     [ItemId.ONION]: 'Onion',
     [ItemId.GARLIC]: 'Garlic',
-    [ItemId.CAMPFIRE_POT]: '',
+    [ItemId.CAMPFIRE_POT]: null,
   },
 
   campfirePot: ItemStackUtils.new(ItemUtils.new(ItemId.CAMPFIRE_POT)),

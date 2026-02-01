@@ -28,7 +28,7 @@ export const CampfirePot = () => {
         // Ensure the user can only add one item to the campfire at a time
         maxCapacity={1}
         canReceiveItems={() => true}
-        slotId={'campfire-pot'}
+        slotId="campfire-pot"
       />
       <img src={fireSource} width={80} />
     </Box>
