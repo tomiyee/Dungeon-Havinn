@@ -1,7 +1,7 @@
 import { Box, Badge, Typography, type SxProps, LinearProgress } from "@mui/material";
 import type { ItemStack } from "../classes/ItemStack";
 import { useCustomItemName } from "../hooks/useCustomItemNames";
-import { ITEM_STACK_WIDTH, STATIC_ITEM_PROPERTIES } from "../constants/items";
+import { ITEM_STACK_WIDTH } from "../constants/items";
 import { useDraggable } from "@dnd-kit/core";
 import type { DraggableData } from "../constants/draggableData";
 import { isDefined } from "../utils";
@@ -34,7 +34,7 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
   if (item?.itemId === undefined) {
     return <Box sx={styles.itemStack} />;
   }
-  const staticItemData = STATIC_ITEM_PROPERTIES[item.itemId];
+
   const icon = ItemUtils.getIcon(item)
 
 
@@ -58,7 +58,7 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
     </Box>
     {itemName !== "" &&
       <Box flex={0} display='flex' justifyContent='center'>
-        <Typography variant='body1' color='black'>
+        <Typography variant='body1' color='black' sx={{ backgroundColor: "#fffa", px: 0.25, borderRadius: 1 }}>
           {itemName}
         </Typography>
       </Box>

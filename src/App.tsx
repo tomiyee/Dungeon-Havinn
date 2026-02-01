@@ -45,7 +45,7 @@ function App() {
   }
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <Box display="flex">
+      <Box display="flex" alignItems='end'>
         <Pantry />
         <CuttingBoard />
         <CampfirePot />
