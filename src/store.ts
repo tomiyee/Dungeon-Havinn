@@ -2,12 +2,14 @@ import { create } from 'zustand';
 import { ItemId } from './constants/items';
 import { type ItemStack, ItemStackUtils } from './classes/ItemStack';
 import { ItemUtils } from './classes/Item';
+import type { Recipe } from './classes/Recipe';
 
 export interface DungeonHavinnState {
   customItemNames: Record<ItemId, string | null>;
   pantry: ItemStack[];
   cuttingBoard: ItemStack;
   campfirePot: ItemStack;
+  campfirePotActiveRecipe: Recipe;
   waterSpoutSlot: ItemStack;
   actions: {
     setCubby: (cubbyIndex: number, itemStack: ItemStack) => void;
@@ -27,6 +29,7 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
   waterSpoutSlot: ItemStackUtils.newEmpty(),
 
   campfirePot: ItemStackUtils.new(ItemUtils.new(ItemId.CAMPFIRE_POT)),
+  campfirePotActiveRecipe: [],
 
   pantry: [
     ItemStackUtils.new(ItemUtils.new(ItemId.MUSHROOM), 3),
