@@ -9,3 +9,7 @@ export const noop = () => {};
 export const assertUnreachable = (value: never) => {
   throw new Error(`Unexpected value: ${value}`);
 };
+
+export type EnumOf<T> = T[keyof T];
+
+export const EMPTY_ARRAY = Object.freeze([]) as never[];

@@ -1,3 +1,5 @@
+import type { EnumOf } from '../utils';
+
 export const ITEM_STACK_WIDTH = 80;
 
 export const ItemId = {
@@ -8,7 +10,7 @@ export const ItemId = {
   CAMPFIRE_POT: 'CAMPFIRE_POT',
 } as const;
 
-export type ItemId = (typeof ItemId)[keyof typeof ItemId];
+export type ItemId = EnumOf<typeof ItemId>;
 
 type StaticItemProperties = {
   description: string;
