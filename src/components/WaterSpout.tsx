@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { ItemUtils } from '../classes/Item';
 import { ItemStackUtils, type ItemStack } from '../classes/ItemStack';
 import { ItemSlot } from './ItemSlot';
@@ -13,11 +12,6 @@ export const WaterSpout = () => {
 
   const waterSpoutItem = useDungeonHavinnStore((state) => state.waterSpoutSlot);
 
-  const canReceiveItems = useCallback(
-    (itemStack: ItemStack) => ItemUtils.isWashable(itemStack.item),
-    [],
-  );
-
   return (
     <Box display="flex" flexDirection="column" gap={2}>
       <img src={waterSpoutSource} width={80} />
@@ -25,9 +19,9 @@ export const WaterSpout = () => {
         slotId="water-spout"
         itemStack={waterSpoutItem}
         setItemStack={(itemStack) => useDungeonHavinnStore.setState({ waterSpoutSlot: itemStack })}
-        canReceiveItems={canReceiveItems}
+        canReceiveItems={itemStackIsWashable}
         combineItems={(sourceStack) => {
-          if (!canReceiveItems(sourceStack)) {
+          if (!itemStackIsWashable(sourceStack)) {
             return null;
           }
           const { remainingStack, resultStack } = ItemStackUtils.splitStack(sourceStack, 1);
@@ -42,3 +36,5 @@ export const WaterSpout = () => {
     </Box>
   );
 };
+
+const itemStackIsWashable = (itemStack: ItemStack) => ItemUtils.isWashable(itemStack.item);
