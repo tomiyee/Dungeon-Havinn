@@ -1,4 +1,3 @@
-import { Box, Badge, Typography, type SxProps, LinearProgress, TextField } from '@mui/material';
 import type { ItemStack } from '../classes/ItemStack';
 import { useCustomItemName } from '../hooks/useCustomItemNames';
 import { ITEM_STACK_WIDTH, ItemId } from '../constants/items';
@@ -6,17 +5,25 @@ import { useDraggable } from '@dnd-kit/core';
 import type { DraggableData } from '../constants/draggableData';
 import { isDefined } from '../utils';
 import { ItemUtils } from '../classes/Item';
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
+import Badge from '@mui/material/Badge';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 
 const MAX_ITEM_NAME_LENGTH = 8;
 
-type PantryCubbyProps = {
+type ItemStackDisplayProps = {
   itemStack: ItemStack;
   setItemStack: (itemStack: ItemStack) => void;
+  /** If disabled, prevents users from dragging the ItemStack away */
+  disabled?: boolean;
 };
 
-export const ItemStackDisplay = (props: PantryCubbyProps) => {
-  const { itemStack, setItemStack } = props;
+export const ItemStackDisplay = (props: ItemStackDisplayProps) => {
+  const { itemStack, setItemStack, disabled } = props;
   const { item, quantity } = itemStack;
   const { customItemName, setCustomItemName } = useCustomItemName(item?.itemId);
 
@@ -30,7 +37,7 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: itemStack.stackId,
     data: draggableData,
-    disabled: editing,
+    disabled: editing || disabled,
   });
 
   const style = transform
@@ -60,13 +67,20 @@ export const ItemStackDisplay = (props: PantryCubbyProps) => {
         justifyContent="center"
         position="relative"
       >
-        <Badge badgeContent={quantity > 1 ? quantity : undefined} color="primary">
-          <img
-            src={icon}
-            alt={customItemName ?? 'Unnamed Item'}
-            width={customItemName !== null ? 40 : 70}
-            height={customItemName !== null ? 40 : 70}
-          />
+        <Badge
+          badgeContent={item.watered ? <WaterDropOutlinedIcon fontSize="small" /> : undefined}
+          anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+          color="primary"
+        >
+          <Badge badgeContent={quantity > 1 ? quantity : undefined} color="primary">
+            <img
+              src={icon}
+              alt={customItemName ?? 'Unnamed Item'}
+              width={customItemName !== null ? 40 : 70}
+              height={customItemName !== null ? 40 : 70}
+              draggable={false}
+            />
+          </Badge>
         </Badge>
         {hasBoiledProgress && (
           <LinearProgress
@@ -182,4 +196,4 @@ const styles = {
     width: 'calc(100% - 8px)',
     left: 4,
   },
-} satisfies Record<string, SxProps>;
+} satisfies Record<string, CSSProperties>;

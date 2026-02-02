@@ -1,8 +1,8 @@
-import { Box } from '@mui/material';
 import { type ItemStack } from '../../classes/ItemStack';
 import { ItemSlot } from '../ItemSlot';
 import type { CSSProperties } from 'react';
 import { storeActions } from '../../store';
+import Box from '@mui/material/Box';
 
 const NUM_COLS = 2;
 

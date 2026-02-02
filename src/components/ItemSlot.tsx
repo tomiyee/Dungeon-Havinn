@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { ItemStackUtils, type ItemStack } from '../classes/ItemStack';
 import { ItemStackDisplay } from './ItemStackDisplay';
 import { useDroppable } from '@dnd-kit/core';
@@ -6,6 +5,7 @@ import { useMemo } from 'react';
 import type { DroppableData } from '../constants/droppableData';
 import type { CSSProperties } from '@mui/material/styles';
 import { ITEM_STACK_WIDTH, ItemId } from '../constants/items';
+import Box from '@mui/material/Box';
 
 /** The rule that most item slots will follow */
 const generalSlotRule = (itemStack: ItemStack) => {
@@ -21,6 +21,8 @@ type ItemSlotProps = {
   canReceiveItems?: (itemStack: ItemStack) => boolean;
   /** Override of the default behavior for moving a stack onto this item slot */
   combineItems?: typeof ItemStackUtils.combine;
+  /** If true, disables the ability for users to drag the item out of the slot */
+  disableDrag?: boolean;
 };
 
 export const ItemSlot = (props: ItemSlotProps) => {
@@ -31,6 +33,7 @@ export const ItemSlot = (props: ItemSlotProps) => {
     maxCapacity,
     canReceiveItems = generalSlotRule,
     combineItems,
+    disableDrag,
   } = props;
   const droppableData: DroppableData = useMemo(
     () => ({
@@ -65,11 +68,11 @@ export const ItemSlot = (props: ItemSlotProps) => {
       ref={setNodeRef}
       sx={[
         styles.itemSlot,
-        hasItem && styles.pointer,
+        hasItem && !disableDrag && styles.pointer,
         showSlotReceivable && styles.itemSlotHovered,
       ]}
     >
-      <ItemStackDisplay itemStack={itemStack} setItemStack={setItemStack} />
+      <ItemStackDisplay itemStack={itemStack} setItemStack={setItemStack} disabled={disableDrag} />
     </Box>
   );
 };

@@ -3,10 +3,10 @@ import { ItemUtils } from '../classes/Item';
 import { EMPTY_ITEM_STACK, ItemStackUtils, type ItemStack } from '../classes/ItemStack';
 import { noop } from '../utils';
 import { ItemSlot } from './ItemSlot';
-import { Box } from '@mui/material';
 import waterSpoutSource from '../assets/water_tap.png';
 import waterFaucetSound from '../assets/sounds/faucet.mp3';
 import useSound from 'use-sound';
+import Box from '@mui/material/Box';
 
 export const WaterSpout = () => {
   const [playSound] = useSound(waterFaucetSound, { volume: 0.4 });

@@ -5,3 +5,7 @@ export const isDefined = <T>(value: T | undefined | null): value is T => {
 };
 
 export const noop = () => {};
+
+export const assertUnreachable = (value: never) => {
+  throw new Error(`Unexpected value: ${value}`);
+};

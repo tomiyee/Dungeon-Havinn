@@ -31,6 +31,12 @@ export default defineConfig([
           children: 'never',
         },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [{ regex: '^@mui/[^/]+$' }],
+        },
+      ],
     },
   },
 ]);

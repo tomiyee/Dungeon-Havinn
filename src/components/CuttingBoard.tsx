@@ -1,10 +1,11 @@
-import { Box, Button } from '@mui/material';
 import { ItemSlot } from './ItemSlot';
 import { useDungeonHavinnStore, type DungeonHavinnState } from '../store';
 import useSound from 'use-sound';
 import knifeSound1 from '../assets/sounds/knife-throw-1.mp3';
 import knifeSound2 from '../assets/sounds/knife-throw-2.mp3';
 import { isDefined } from '../utils';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 const selectCuttingBoardSlot = (state: DungeonHavinnState) => state.cuttingBoard;
 

@@ -80,6 +80,13 @@ export class ItemStackUtils {
       },
     };
   }
+
+  static clone(itemStack: ItemStack) {
+    return {
+      ...structuredClone(itemStack),
+      stackId: crypto.randomUUID(),
+    };
+  }
 }
 
 export const EMPTY_ITEM_STACK: ItemStack = Object.freeze(ItemStackUtils.newEmpty());

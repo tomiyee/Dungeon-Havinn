@@ -4,11 +4,13 @@ import { Pantry } from './components/Pantry/Pantry';
 import type { DroppableData } from './constants/droppableData';
 import type { DraggableData } from './constants/draggableData';
 import { ItemStackUtils } from './classes/ItemStack';
-import { Box } from '@mui/material';
 import { CuttingBoard } from './components/CuttingBoard';
 import { Credits } from './components/Credits';
 import { CampfirePot } from './components/CampfirePot';
 import { WaterSpout } from './components/WaterSpout';
+import { LittleChef } from './components/LittleChef';
+import Box from '@mui/material/Box';
+import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 
 function App() {
   const sensors = useSensors(
@@ -56,13 +58,14 @@ function App() {
     dropData.setItemStack(resultStack);
   };
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+    <DndContext onDragEnd={handleDragEnd} sensors={sensors} modifiers={[restrictToWindowEdges]}>
       <Box display="flex" alignItems="end">
         <Pantry />
         <CuttingBoard />
         <CampfirePot />
         <WaterSpout />
       </Box>
+      <LittleChef />
       <Credits />
     </DndContext>
   );

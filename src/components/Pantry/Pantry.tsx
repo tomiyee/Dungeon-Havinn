@@ -1,9 +1,8 @@
 import { useDungeonHavinnStore, type DungeonHavinnState } from '../../store';
 import { PantryCubby } from './PantryCubby';
-import type { SxProps } from '@mui/material';
-import { Box } from '@mui/system';
 import emptyDrawerSource from '../../assets/drawer_empty.png';
 import type { CSSProperties } from 'react';
+import Box from '@mui/material/Box';
 
 const selectPantryState = (state: DungeonHavinnState) => state.pantry;
 
@@ -20,13 +19,13 @@ export const Pantry = () => {
   );
 };
 
-const styles: Record<string, SxProps> = {
+const styles = {
   pantry: {
     position: 'relative',
     // backgroundImage: `url(${emptyDrawerSource})`,
     backgroundRepeat: 'no-repeat',
   },
-};
+} satisfies Record<string, CSSProperties>;
 
 const imageStyle: CSSProperties = {
   width: '300px',

@@ -1,5 +1,6 @@
 import { ItemIcon } from '../constants/ItemIcons';
 import { ItemId } from '../constants/items';
+import { assertUnreachable, isDefined } from '../utils';
 
 export type Item = {
   itemId: ItemId;
@@ -43,6 +44,35 @@ export class ItemUtils {
         return ItemIcon.ONION;
       default:
         return '';
+    }
+  }
+
+  static getObservation(item: Item | null): string | undefined {
+    if (!isDefined(item)) {
+      return undefined;
+    }
+    switch (item.itemId) {
+      case ItemId.ONION: {
+        return 'Spicy, crunchy thing grows from the ground.';
+      }
+      case ItemId.CAMPFIRE_POT: {
+        if (item.watered) {
+          return 'It has water inside!';
+        }
+        return 'I use this for food';
+      }
+      case ItemId.MUSHROOM: {
+        return "It's a squishy brown thing. Good if I cook it.";
+      }
+      case ItemId.GARLIC: {
+        return 'Stinky bulb';
+      }
+      default:
+        try {
+          assertUnreachable(item.itemId);
+        } catch {
+          return "I don't know what this is.";
+        }
     }
   }
 }

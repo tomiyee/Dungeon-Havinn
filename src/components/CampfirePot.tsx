@@ -3,9 +3,14 @@ import { type ItemStack } from '../classes/ItemStack';
 import { ItemId } from '../constants/items';
 import { ItemSlot } from './ItemSlot';
 import { useDungeonHavinnStore, type DungeonHavinnState } from '../store';
-import { Box, Button, CircularProgress, Popover, Stack, Typography } from '@mui/material';
 import litFireSource from '../assets/bonfire.png';
 import unlitFireSource from '../assets/bonfire_unlit.png';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Popover from '@mui/material/Popover';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 const selectCampfirePot = (store: DungeonHavinnState) => store.campfirePot;
 

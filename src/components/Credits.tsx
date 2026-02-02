@@ -1,12 +1,10 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from '@mui/material';
 import infoIcon from '../assets/info.png'; // www.freepik.com
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 
 export const Credits = () => {
