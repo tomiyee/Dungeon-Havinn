@@ -1,5 +1,5 @@
 import { useCallback, useId, useState } from 'react';
-import { type ItemStack } from '../classes/ItemStack';
+import { EMPTY_ITEM_STACK, type ItemStack } from '../classes/ItemStack';
 import { ItemId } from '../constants/items';
 import { ItemSlot } from './ItemSlot';
 import { useDungeonHavinnStore, type DungeonHavinnState } from '../store';
@@ -21,6 +21,9 @@ export const CampfirePot = () => {
   const onAddIngredient = useCallback((itemStack: ItemStack) => {
     if (itemStack.item?.itemId === ItemId.CAMPFIRE_POT) {
       useDungeonHavinnStore.setState({ campfirePot: itemStack });
+    }
+    if (itemStack.item?.itemId === null || itemStack.quantity === 0) {
+      useDungeonHavinnStore.setState({ campfirePot: EMPTY_ITEM_STACK });
     }
     return;
   }, []);
@@ -52,7 +55,10 @@ export const CampfirePot = () => {
           setItemStack={onAddIngredient}
           // Ensure the user can only add one item to the campfire at a time
           maxCapacity={1}
-          canReceiveItems={() => true}
+          canReceiveItems={(itemStack) =>
+            itemStack.item?.itemId === ItemId.CAMPFIRE_POT ||
+            campfirePot.item?.itemId === ItemId.CAMPFIRE_POT
+          }
           slotId="campfire-pot"
         />
         {cooking && (

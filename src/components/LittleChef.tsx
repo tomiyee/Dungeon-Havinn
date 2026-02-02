@@ -20,20 +20,22 @@ export const LittleChef = () => {
       <Stack direction="row" spacing={1}>
         <Stack alignItems="center" spacing={1}>
           <img src={goblinSource} width={90} />
-          <Box sx={{ opacity: 0.78, backgroundColor: '#555' }} p={0.5} borderRadius={2}>
-            <ItemSlot
-              slotId="goblin-inspector-slot"
-              itemStack={observedItem}
-              canReceiveItems={() => true}
-              combineItems={(source) => ({
-                remainingStack: source,
-                resultStack: getItemToObserve(source),
-              })}
-              setItemStack={(itemStack) => {
-                setObservedItem(itemStack);
-              }}
-              disableDrag
-            />
+          <Box sx={{ backgroundColor: '#555a' }} p={0.5} borderRadius={2}>
+            <Box sx={{ opacity: 0.5 }}>
+              <ItemSlot
+                slotId="goblin-inspector-slot"
+                itemStack={observedItem}
+                canReceiveItems={() => true}
+                combineItems={(source) => ({
+                  remainingStack: source,
+                  resultStack: getItemToObserve(source),
+                })}
+                setItemStack={(itemStack) => {
+                  setObservedItem(itemStack);
+                }}
+                disableDrag
+              />
+            </Box>
           </Box>
         </Stack>
         {!!observedItemDescription && (

@@ -53,6 +53,7 @@ function App() {
       return;
     }
     const { remainingStack, resultStack } = combinationResult;
+    console.log(combinationResult);
 
     activeData.setItemStack(remainingStack);
     dropData.setItemStack(resultStack);

@@ -87,6 +87,31 @@ export class ItemStackUtils {
       stackId: crypto.randomUUID(),
     };
   }
+
+  static subtract(itemStack: ItemStack, quantity: number) {
+    if (itemStack.quantity - quantity <= 0) {
+      return EMPTY_ITEM_STACK;
+    }
+    const clonedItemStack = ItemStackUtils.clone(itemStack);
+    clonedItemStack.quantity -= quantity;
+    return clonedItemStack;
+  }
+
+  static splitStack(itemStack: ItemStack, quantity: number) {
+    if (itemStack.quantity < quantity) {
+      throw new Error(`Attempted to split stack ${itemStack} into a stack with ${quantity}.`);
+    }
+    const remainingStack = ItemStackUtils.subtract(itemStack, quantity);
+    console.log(remainingStack);
+    // The remaining stack
+    const resultStack = ItemStackUtils.clone(itemStack);
+    resultStack.quantity = quantity;
+    resultStack.stackId = crypto.randomUUID();
+    return {
+      remainingStack,
+      resultStack,
+    };
+  }
 }
 
 export const EMPTY_ITEM_STACK: ItemStack = Object.freeze(ItemStackUtils.newEmpty());

@@ -62,6 +62,21 @@ export class ItemUtils {
         return 'I use this for food';
       }
       case ItemId.MUSHROOM: {
+        if (item.choppedProgress > 0) {
+          if (item.choppedProgress < 10) return 'This is not very chopped';
+          if (item.choppedProgress < 50) {
+            return 'This is sliced';
+          }
+          if (item.choppedProgress < 80) {
+            return 'This is diced';
+          }
+          if (item.choppedProgress < 100) {
+            return 'This is minced';
+          }
+
+          return 'This is mush';
+        }
+
         return "It's a squishy brown thing. Good if I cook it.";
       }
       case ItemId.GARLIC: {

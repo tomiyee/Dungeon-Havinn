@@ -8,6 +8,7 @@ export interface DungeonHavinnState {
   pantry: ItemStack[];
   cuttingBoard: ItemStack;
   campfirePot: ItemStack;
+  waterSpoutSlot: ItemStack;
   actions: {
     setCubby: (cubbyIndex: number, itemStack: ItemStack) => void;
     setCuttingBoard: (itemStack: ItemStack) => void;
@@ -22,6 +23,8 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
     [ItemId.GARLIC]: 'Garlic',
     [ItemId.CAMPFIRE_POT]: null,
   },
+
+  waterSpoutSlot: ItemStackUtils.newEmpty(),
 
   campfirePot: ItemStackUtils.new(ItemUtils.new(ItemId.CAMPFIRE_POT)),
 

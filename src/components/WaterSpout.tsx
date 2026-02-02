@@ -1,15 +1,17 @@
 import { useCallback } from 'react';
 import { ItemUtils } from '../classes/Item';
-import { EMPTY_ITEM_STACK, ItemStackUtils, type ItemStack } from '../classes/ItemStack';
-import { noop } from '../utils';
+import { ItemStackUtils, type ItemStack } from '../classes/ItemStack';
 import { ItemSlot } from './ItemSlot';
 import waterSpoutSource from '../assets/water_tap.png';
 import waterFaucetSound from '../assets/sounds/faucet.mp3';
 import useSound from 'use-sound';
 import Box from '@mui/material/Box';
+import { useDungeonHavinnStore } from '../store';
 
 export const WaterSpout = () => {
   const [playSound] = useSound(waterFaucetSound, { volume: 0.4 });
+
+  const waterSpoutItem = useDungeonHavinnStore((state) => state.waterSpoutSlot);
 
   const canReceiveItems = useCallback(
     (itemStack: ItemStack) => ItemUtils.isWashable(itemStack.item),
@@ -21,19 +23,21 @@ export const WaterSpout = () => {
       <img src={waterSpoutSource} width={80} />
       <ItemSlot
         slotId="water-spout"
-        itemStack={EMPTY_ITEM_STACK}
+        itemStack={waterSpoutItem}
+        setItemStack={(itemStack) => useDungeonHavinnStore.setState({ waterSpoutSlot: itemStack })}
         canReceiveItems={canReceiveItems}
-        combineItems={(sourceStack, targetStack) => {
+        combineItems={(sourceStack) => {
           if (!canReceiveItems(sourceStack)) {
             return null;
           }
+          const { remainingStack, resultStack } = ItemStackUtils.splitStack(sourceStack, 1);
+
           playSound();
           return {
-            remainingStack: ItemStackUtils.addWater(sourceStack),
-            resultStack: targetStack,
+            remainingStack: remainingStack,
+            resultStack: ItemStackUtils.addWater(resultStack),
           };
         }}
-        setItemStack={noop}
       />
     </Box>
   );
