@@ -1,16 +1,16 @@
 import { useCallback, useId, useState } from 'react';
-import { EMPTY_ITEM_STACK, type ItemStack } from '../classes/ItemStack';
-import { ItemId } from '../constants/items';
-import { ItemSlot } from './ItemSlot';
-import { useDungeonHavinnStore, type DungeonHavinnState } from '../store';
-import litFireSource from '../assets/bonfire.png';
-import unlitFireSource from '../assets/bonfire_unlit.png';
+import { EMPTY_ITEM_STACK, ItemStackUtils, type ItemStack } from '../../classes/ItemStack';
+import { ItemId } from '../../constants/items';
+import { ItemSlot } from '../ItemSlot';
+import { storeActions, useDungeonHavinnStore, type DungeonHavinnState } from '../../store';
+import litFireSource from '../../assets/bonfire.png';
+import unlitFireSource from '../../assets/bonfire_unlit.png';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Popover from '@mui/material/Popover';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import { CurrentRecipe } from './CurrentRecipe';
+import { isDefined } from '../../utils';
 
 const selectCampfirePot = (store: DungeonHavinnState) => store.campfirePot;
 
@@ -21,9 +21,11 @@ export const CampfirePot = () => {
   const onAddIngredient = useCallback((itemStack: ItemStack) => {
     if (itemStack.item?.itemId === ItemId.CAMPFIRE_POT) {
       useDungeonHavinnStore.setState({ campfirePot: itemStack });
-    }
-    if (itemStack.item?.itemId === null || itemStack.quantity === 0) {
+      storeActions.addRecipeStep({ type: 'water' });
+    } else if (itemStack.item?.itemId === null || itemStack.quantity === 0) {
       useDungeonHavinnStore.setState({ campfirePot: EMPTY_ITEM_STACK });
+    } else if (isDefined(itemStack.item)) {
+      storeActions.addRecipeStep({ type: 'ingredient', ingredient: itemStack.item });
     }
     return;
   }, []);
@@ -55,10 +57,14 @@ export const CampfirePot = () => {
           setItemStack={onAddIngredient}
           // Ensure the user can only add one item to the campfire at a time
           maxCapacity={1}
-          canReceiveItems={(itemStack) =>
-            itemStack.item?.itemId === ItemId.CAMPFIRE_POT ||
-            campfirePot.item?.itemId === ItemId.CAMPFIRE_POT
-          }
+          canReceiveItems={() => true}
+          combineItems={(sourceStack) => {
+            const { remainingStack, resultStack } = ItemStackUtils.splitStack(sourceStack, 1);
+            return {
+              remainingStack,
+              resultStack,
+            };
+          }}
           slotId="campfire-pot"
         />
         {cooking && (
@@ -93,9 +99,7 @@ export const CampfirePot = () => {
         onClose={handlePopoverClose}
         disableRestoreFocus
       >
-        <Stack p={1}>
-          <Typography>Current Recipe</Typography>
-        </Stack>
+        <CurrentRecipe />
       </Popover>
       <Button color="error" onClick={() => setCooking((old) => !old)}>
         <Box

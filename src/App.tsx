@@ -6,7 +6,7 @@ import type { DraggableData } from './constants/draggableData';
 import { ItemStackUtils } from './classes/ItemStack';
 import { CuttingBoard } from './components/CuttingBoard';
 import { Credits } from './components/Credits';
-import { CampfirePot } from './components/CampfirePot';
+import { CampfirePot } from './components/CampfirePot/CampfirePot';
 import { WaterSpout } from './components/WaterSpout';
 import { LittleChef } from './components/LittleChef';
 import Box from '@mui/material/Box';

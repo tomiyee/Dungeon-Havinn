@@ -1,22 +1,31 @@
 import { ItemIcon } from '../constants/ItemIcons';
 import { ItemId } from '../constants/items';
 import { assertUnreachable, isDefined } from '../utils';
+import type { Recipe } from './Recipe';
 
 export type Item = {
   itemId: ItemId;
+  recipe: Recipe | undefined;
   choppedProgress: number;
+  /** Number between 0 and 100 */
   boiledProgress: number;
   /** If the item has had water applied */
   watered: boolean;
+  burnt: boolean;
 };
 
 export class ItemUtils {
-  static new(itemId: ItemId): Item {
+  static new(itemId: ItemId, recipe?: Recipe): Item {
+    if (itemId === ItemId.BOWL_OF_SOUP && recipe === undefined) {
+      throw new Error(`Item ${ItemId.BOWL_OF_SOUP} was created without a recipe`);
+    }
     return {
       itemId,
+      recipe,
       choppedProgress: 0,
       boiledProgress: 0,
       watered: false,
+      burnt: false,
     };
   }
 
@@ -81,6 +90,9 @@ export class ItemUtils {
       }
       case ItemId.GARLIC: {
         return 'Stinky bulb';
+      }
+      case ItemId.BOWL_OF_SOUP: {
+        return 'Yummy food';
       }
       default:
         try {
