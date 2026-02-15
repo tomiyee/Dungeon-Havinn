@@ -1,3 +1,5 @@
+import type { EnumOf } from '../utils';
+
 export const ITEM_STACK_WIDTH = 80;
 
 export const ItemId = {
@@ -6,9 +8,11 @@ export const ItemId = {
   GARLIC: 'GARLIC',
   // Special Items
   CAMPFIRE_POT: 'CAMPFIRE_POT',
+  /** A bowl with food in it after having cooked from the pot */
+  BOWL_OF_SOUP: 'BOWL_OF_SOUP',
 } as const;
 
-export type ItemId = (typeof ItemId)[keyof typeof ItemId];
+export type ItemId = EnumOf<typeof ItemId>;
 
 type StaticItemProperties = {
   description: string;
@@ -31,6 +35,10 @@ export const STATIC_ITEM_PROPERTIES: Record<ItemId, StaticItemProperties> = {
   },
   [ItemId.CAMPFIRE_POT]: {
     description: 'A pot used for cooking over a campfire.',
+    chopTime: Number.POSITIVE_INFINITY,
+  },
+  [ItemId.BOWL_OF_SOUP]: {
+    description: 'Yummy food',
     chopTime: Number.POSITIVE_INFINITY,
   },
 };
