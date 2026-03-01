@@ -2,21 +2,18 @@ import { create } from 'zustand';
 import { ItemId } from './constants/items';
 import { type ItemStack, ItemStackUtils } from './classes/ItemStack';
 import { ItemUtils } from './classes/Item';
-import { RecipeUtils, type Recipe, type RecipeStep } from './classes/Recipe';
 
 export interface DungeonHavinnState {
   customItemNames: Record<ItemId, string | null>;
   pantry: ItemStack[];
   cuttingBoard: ItemStack;
-  campfirePot: ItemStack;
-  campfirePotActiveRecipe: Recipe;
+  campfirePotSlot: ItemStack;
   waterSpoutSlot: ItemStack;
   /** Integer from 0 - 10 */
   satiation: number;
   actions: {
     setCubby: (cubbyIndex: number, itemStack: ItemStack) => void;
     setCuttingBoard: (itemStack: ItemStack) => void;
-    addRecipeStep: (recipeStep: RecipeStep) => void;
     /**
      * The amount of heat to add to the active recipe
      * @param heatDuration A number from 0-100
@@ -26,7 +23,7 @@ export interface DungeonHavinnState {
 }
 
 /** Zustand store */
-export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
+export const useDungeonHavinnStore = create<DungeonHavinnState>((set, get) => ({
   satiation: 0,
   customItemNames: {
     [ItemId.MUSHROOM]: 'Mushroom',
@@ -38,8 +35,7 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
 
   waterSpoutSlot: ItemStackUtils.newEmpty(),
 
-  campfirePot: ItemStackUtils.new(ItemUtils.new(ItemId.CAMPFIRE_POT)),
-  campfirePotActiveRecipe: RecipeUtils.new(),
+  campfirePotSlot: ItemStackUtils.new(ItemUtils.new(ItemId.CAMPFIRE_POT)),
 
   pantry: [
     ItemStackUtils.new(ItemUtils.new(ItemId.MUSHROOM), 3),
@@ -65,14 +61,14 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
         cuttingBoard: itemStack,
       }));
     },
-    addRecipeStep(recipeStep: RecipeStep) {
-      set((state) => ({
-        campfirePotActiveRecipe: [...state.campfirePotActiveRecipe, recipeStep],
-      }));
-    },
     heatRecipe(heatDuration: number) {
+      const currentCampfireItem = get().campfirePotSlot.item;
+      if (currentCampfireItem?.itemId !== ItemId.CAMPFIRE_POT) {
+        return;
+      }
       set((state) => {
-        const newRecipeState = structuredClone(state.campfirePotActiveRecipe);
+        const currentRecipeState = currentCampfireItem.recipe;
+        const newRecipeState = structuredClone(currentRecipeState ?? []);
         const lastRecipeStep = newRecipeState.at(-1);
         // Add to the existing heat step if it exists and is last, otherwise create a new heat step
         if (lastRecipeStep?.type !== 'heat') {
@@ -80,7 +76,15 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set) => ({
         } else {
           lastRecipeStep.heatDuration += heatDuration;
         }
-        return { campfirePotActiveRecipe: newRecipeState };
+        return {
+          campfirePotSlot: {
+            ...state.campfirePotSlot,
+            item:
+              state.campfirePotSlot.item === null
+                ? null
+                : { ...state.campfirePotSlot.item, recipe: newRecipeState },
+          },
+        };
       });
     },
   },

@@ -4,13 +4,11 @@ import { useDroppable } from '@dnd-kit/core';
 import { useMemo } from 'react';
 import type { DroppableData } from '../constants/droppableData';
 import type { CSSProperties } from '@mui/material/styles';
-import { ITEM_STACK_WIDTH, ItemId } from '../constants/items';
+import { ITEM_STACK_WIDTH } from '../constants/items';
 import Box from '@mui/material/Box';
 
 /** The rule that most item slots will follow */
-const generalSlotRule = (itemStack: ItemStack) => {
-  return itemStack.item?.itemId !== ItemId.CAMPFIRE_POT;
-};
+const generalSlotRule = () => true;
 
 type ItemSlotProps = {
   /** Needs to be globally unique */
@@ -35,6 +33,7 @@ export const ItemSlot = (props: ItemSlotProps) => {
     combineItems,
     disableDrag,
   } = props;
+
   const droppableData: DroppableData = useMemo(
     () => ({
       itemStack,

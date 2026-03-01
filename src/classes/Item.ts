@@ -5,6 +5,7 @@ import type { Recipe } from './Recipe';
 
 export type Item = {
   itemId: ItemId;
+  /** Some items have a relevant recipe, like a pot or bowl */
   recipe: Recipe | undefined;
   choppedProgress: number;
   /** Number between 0 and 100 */

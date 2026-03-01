@@ -1,59 +1,47 @@
-import { useCallback, useId, useState } from 'react';
-import { EMPTY_ITEM_STACK, ItemStackUtils, type ItemStack } from '../../classes/ItemStack';
-import { ItemId } from '../../constants/items';
+import { useCallback, useState } from 'react';
+import { ItemStackUtils, type ItemStack } from '../../classes/ItemStack';
 import { ItemSlot } from '../ItemSlot';
-import { storeActions, useDungeonHavinnStore, type DungeonHavinnState } from '../../store';
+import { useDungeonHavinnStore, type DungeonHavinnState } from '../../store';
 import litFireSource from '../../assets/bonfire.png';
 import unlitFireSource from '../../assets/bonfire_unlit.png';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import Popover from '@mui/material/Popover';
-import { CurrentRecipe } from './CurrentRecipe';
 import { isDefined } from '../../utils';
 
-const selectCampfirePot = (store: DungeonHavinnState) => store.campfirePot;
+const selectCampfirePot = (store: DungeonHavinnState) => store.campfirePotSlot;
 
 export const CampfirePot = () => {
-  const campfirePot = useDungeonHavinnStore(selectCampfirePot);
+  const campfirePotSlot = useDungeonHavinnStore(selectCampfirePot);
   const [cooking, setCooking] = useState(false);
 
-  const onAddIngredient = useCallback((itemStack: ItemStack) => {
-    if (itemStack.item?.itemId === ItemId.CAMPFIRE_POT) {
-      useDungeonHavinnStore.setState({ campfirePot: itemStack });
-      storeActions.addRecipeStep({ type: 'water' });
-    } else if (itemStack.item?.itemId === null || itemStack.quantity === 0) {
-      useDungeonHavinnStore.setState({ campfirePot: EMPTY_ITEM_STACK });
-    } else if (isDefined(itemStack.item)) {
-      storeActions.addRecipeStep({ type: 'ingredient', ingredient: itemStack.item });
-    }
-    return;
-  }, []);
-
-  const popoverId = useId();
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const isViewingRecipe = Boolean(anchorEl);
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
+  /**
+   * @note Assume that the item is allowed to be dragged onto the campfire pot.
+   */
+  const onAddIngredient = useCallback(
+    (incomingItemStack: ItemStack) => {
+      if (isDefined(incomingItemStack.item) && isDefined(campfirePotSlot.item)) {
+        campfirePotSlot.item.recipe ??= [];
+        campfirePotSlot.item.recipe?.push({
+          type: 'ingredient',
+          ingredient: incomingItemStack.item,
+        });
+        useDungeonHavinnStore.setState({ campfirePotSlot: campfirePotSlot });
+        return;
+      }
+      useDungeonHavinnStore.setState({ campfirePotSlot: incomingItemStack });
+      return;
+    },
+    [campfirePotSlot],
+  );
 
   return (
     <Box display="flex" alignItems="center" flexDirection="column" gap={2}>
-      <Box
-        position="relative"
-        aria-haspopup="true"
-        aria-owns={isViewingRecipe ? popoverId : undefined}
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-      >
+      <Box position="relative">
         <ItemSlot
           // Always show an empty pot
-          itemStack={campfirePot}
-          // When a user "places" an ingredient onto the pot, it gets added to the pot
+          itemStack={campfirePotSlot}
+          // When a user successfully "places" an ingredient onto the pot, it gets added to the pot
           setItemStack={onAddIngredient}
           // Ensure the user can only add one item to the campfire at a time
           maxCapacity={1}
@@ -67,65 +55,45 @@ export const CampfirePot = () => {
           }}
           slotId="campfire-pot"
         />
-        {cooking && (
-          <CircularProgress
-            color="warning"
-            disableShrink
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              margin: 'auto',
-            }}
-          />
-        )}
+        {cooking && <CircularProgress color="warning" disableShrink sx={styles.loadingOverlay} />}
       </Box>
 
-      <Popover
-        open={isViewingRecipe}
-        sx={{ pointerEvents: 'none' }}
-        id={popoverId}
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        onClose={handlePopoverClose}
-        disableRestoreFocus
-      >
-        <CurrentRecipe />
-      </Popover>
       <Button color="error" onClick={() => setCooking((old) => !old)}>
-        <Box
-          sx={{
-            position: 'relative',
-            '&:hover': {
-              '& > .lit-preview': {
-                opacity: '0.5 !important',
-              },
-            },
-          }}
-        >
+        <Box sx={styles.campfireIconWrapper}>
           <img src={cooking ? litFireSource : unlitFireSource} width={80} />
           <img
             className="lit-preview"
             src={litFireSource}
             width={80}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              opacity: 0,
-            }}
+            style={styles.litCampfireIconPreview}
           />
         </Box>
       </Button>
     </Box>
   );
+};
+
+const styles = {
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    margin: 'auto',
+  },
+  campfireIconWrapper: {
+    position: 'relative',
+    '&:hover': {
+      '& > .lit-preview': {
+        opacity: '0.5 !important',
+      },
+    },
+  },
+  litCampfireIconPreview: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    opacity: 0,
+  } as const,
 };

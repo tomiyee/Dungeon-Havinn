@@ -6,6 +6,8 @@ import knifeSound2 from '../assets/sounds/knife-throw-2.mp3';
 import { isDefined } from '../utils';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import type { ItemStack } from '../classes/ItemStack';
+import { ItemId } from '../constants/items';
 
 const selectCuttingBoardSlot = (state: DungeonHavinnState) => state.cuttingBoard;
 
@@ -37,6 +39,7 @@ export const CuttingBoard: React.FC = () => {
       <ItemSlot
         slotId="cutting-board"
         itemStack={cuttingBoardSlot}
+        canReceiveItems={itemCanBeChopped}
         setItemStack={(itemStack) => useDungeonHavinnStore.setState({ cuttingBoard: itemStack })}
         maxCapacity={1}
       />
@@ -57,4 +60,12 @@ export const CuttingBoard: React.FC = () => {
       </Button>
     </Box>
   );
+};
+
+const NOT_CHOPPABLE_ITEMS = new Set<ItemId>([ItemId.CAMPFIRE_POT, ItemId.BOWL_OF_SOUP]);
+
+const itemCanBeChopped = (itemStack: ItemStack): boolean => {
+  const item = itemStack.item;
+  if (item === null) return false;
+  return !NOT_CHOPPABLE_ITEMS.has(item.itemId);
 };

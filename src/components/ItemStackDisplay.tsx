@@ -5,13 +5,15 @@ import { useDraggable } from '@dnd-kit/core';
 import type { DraggableData } from '../constants/draggableData';
 import { isDefined } from '../utils';
 import { ItemUtils } from '../classes/Item';
-import { useState, type CSSProperties } from 'react';
+import { useId, useState, type CSSProperties } from 'react';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
+import Popover from '@mui/material/Popover';
+import { CurrentRecipe } from './CurrentRecipe';
 
 const MAX_ITEM_NAME_LENGTH = 8;
 
@@ -46,6 +48,18 @@ export const ItemStackDisplay = (props: ItemStackDisplayProps) => {
       }
     : undefined;
 
+  const popoverId = useId();
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const isViewingRecipe = Boolean(anchorEl);
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const recipe = itemStack.item?.recipe;
+
   if (item?.itemId === undefined) {
     return <Box sx={styles.itemStack} />;
   }
@@ -58,75 +72,101 @@ export const ItemStackDisplay = (props: ItemStackDisplayProps) => {
     isDefined(itemStack.item?.choppedProgress) && itemStack.item.choppedProgress !== 0;
 
   return (
-    <Box sx={styles.itemStack} ref={setNodeRef} {...listeners} {...attributes} style={style}>
-      <Box
-        flex={1}
-        display="flex"
-        width="100%"
-        alignItems="center"
-        justifyContent="center"
-        position="relative"
-      >
-        <Badge
-          badgeContent={item.watered ? <WaterDropOutlinedIcon fontSize="small" /> : undefined}
-          anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-          color="primary"
+    <>
+      {recipe && (
+        <Popover
+          open={isViewingRecipe}
+          sx={{ pointerEvents: 'none' }}
+          id={popoverId}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          onClose={handlePopoverClose}
+          disableRestoreFocus
         >
-          <Badge badgeContent={quantity > 1 ? quantity : undefined} color="primary">
-            <img
-              src={icon}
-              alt={customItemName ?? 'Unnamed Item'}
-              width={customItemName !== null ? 40 : 70}
-              height={customItemName !== null ? 40 : 70}
-              draggable={false}
-            />
+          <CurrentRecipe recipe={recipe} />
+        </Popover>
+      )}
+      <Box sx={styles.itemStack} ref={setNodeRef} {...listeners} {...attributes} style={style}>
+        <Box
+          aria-owns={isViewingRecipe ? popoverId : undefined}
+          aria-haspopup="true"
+          onMouseEnter={handlePopoverOpen}
+          onMouseLeave={handlePopoverClose}
+          flex={1}
+          display="flex"
+          width="100%"
+          alignItems="center"
+          justifyContent="center"
+          position="relative"
+        >
+          <Badge
+            badgeContent={item.watered ? <WaterDropOutlinedIcon fontSize="small" /> : undefined}
+            anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+            color="primary"
+          >
+            <Badge badgeContent={quantity > 1 ? quantity : undefined} color="primary">
+              <img
+                src={icon}
+                alt={customItemName ?? 'Unnamed Item'}
+                width={customItemName !== null ? 40 : 70}
+                height={customItemName !== null ? 40 : 70}
+                draggable={false}
+              />
+            </Badge>
           </Badge>
-        </Badge>
-        {hasBoiledProgress && (
-          <LinearProgress
-            sx={styles.boiledProgressBar}
-            variant="determinate"
-            value={itemStack.item?.boiledProgress}
-            color="error"
-          />
-        )}
-        {hasChoppedProgress && (
-          <LinearProgress
-            sx={styles.choppedProgressBar}
-            variant="determinate"
-            value={itemStack.item?.choppedProgress}
-            color="warning"
-          />
-        )}
-      </Box>
-      {customItemName !== null && (
-        <Box flex={0} display="flex" justifyContent="center">
-          {editing ? (
-            <ItemNameInput
-              itemId={item.itemId}
-              onCommit={(newName) => {
-                setCustomItemName(newName);
-                setEditing(false);
-              }}
+          {hasBoiledProgress && (
+            <LinearProgress
+              sx={styles.boiledProgressBar}
+              variant="determinate"
+              value={itemStack.item?.boiledProgress}
+              color="error"
             />
-          ) : (
-            <Typography
-              variant="body1"
-              color="black"
-              sx={{
-                backgroundColor: '#fffa',
-                px: 0.25,
-                borderRadius: 1,
-                ':hover': { backgroundColor: `#fffd` },
-              }}
-              onClick={() => setEditing(true)}
-            >
-              {customItemName}
-            </Typography>
+          )}
+          {hasChoppedProgress && (
+            <LinearProgress
+              sx={styles.choppedProgressBar}
+              variant="determinate"
+              value={itemStack.item?.choppedProgress}
+              color="warning"
+            />
           )}
         </Box>
-      )}
-    </Box>
+        {customItemName !== null && (
+          <Box flex={0} display="flex" justifyContent="center">
+            {editing ? (
+              <ItemNameInput
+                itemId={item.itemId}
+                onCommit={(newName) => {
+                  setCustomItemName(newName);
+                  setEditing(false);
+                }}
+              />
+            ) : (
+              <Typography
+                variant="body1"
+                color="black"
+                sx={{
+                  backgroundColor: '#fffa',
+                  px: 0.25,
+                  borderRadius: 1,
+                  ':hover': { backgroundColor: `#fffd` },
+                }}
+                onClick={() => setEditing(true)}
+              >
+                {customItemName}
+              </Typography>
+            )}
+          </Box>
+        )}
+      </Box>
+    </>
   );
 };
 

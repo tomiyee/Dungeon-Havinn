@@ -1,19 +1,25 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useDungeonHavinnStore, type DungeonHavinnState } from '../../store';
-import { RecipeUtils } from '../../classes/Recipe';
-import { ItemStackDisplay } from '../ItemStackDisplay';
-import { noop } from '../../utils';
+import { RecipeUtils, type Recipe } from '../classes/Recipe';
+import { ItemStackDisplay } from './ItemStackDisplay';
+import { noop } from '../utils';
 import { useMemo } from 'react';
 
-const selectRecipeState = (state: DungeonHavinnState) => state.campfirePotActiveRecipe;
+type CurrentRecipeProps = {
+  recipe: Recipe | undefined;
+};
 
-export const CurrentRecipe = () => {
-  const currentRecipeState = useDungeonHavinnStore(selectRecipeState);
+export const CurrentRecipe = (props: CurrentRecipeProps) => {
+  const { recipe: currentRecipeState } = props;
   const currentRecipeItems = useMemo(
-    () => RecipeUtils.getFinalPotState(currentRecipeState),
+    () => (currentRecipeState ? RecipeUtils.getFinalPotState(currentRecipeState) : []),
     [currentRecipeState],
   );
+
+  if (currentRecipeState === undefined) {
+    return null;
+  }
+
   return (
     <Stack p={1}>
       <Typography>Current Recipe</Typography>
