@@ -6,33 +6,18 @@ import knifeSound2 from '../assets/sounds/knife-throw-2.mp3';
 import { isDefined } from '../utils';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import type { ItemStack } from '../classes/ItemStack';
-import { ItemId } from '../constants/items';
+import { ItemStackUtils, type ItemStack } from '../classes/ItemStack';
+import { STATIC_ITEM_PROPERTIES } from '../constants/items';
+import { useCallback } from 'react';
+import type { Item } from '../classes/Item';
 
 const selectCuttingBoardSlot = (state: DungeonHavinnState) => state.cuttingBoard;
-
-const increaseChopProgress = () => {
-  const currentItem = useDungeonHavinnStore.getState().cuttingBoard;
-  useDungeonHavinnStore.setState(() => ({
-    cuttingBoard: {
-      ...currentItem,
-      item:
-        currentItem.item === null
-          ? null
-          : {
-              ...currentItem.item,
-              choppedProgress: Math.min(100, (currentItem.item?.choppedProgress || 0) + 10),
-            },
-    },
-  }));
-};
 
 export const CuttingBoard: React.FC = () => {
   const cuttingBoardSlot = useDungeonHavinnStore(selectCuttingBoardSlot);
   const hasItem = cuttingBoardSlot.item !== null && cuttingBoardSlot.quantity > 0;
 
-  const [playKnifeSound1] = useSound(knifeSound1);
-  const [playKnifeSound2] = useSound(knifeSound2);
+  const playChopSound = usePlayChopSound();
 
   return (
     <Box flexDirection="column" display="flex" alignItems="center" gap={1} padding={1}>
@@ -51,8 +36,7 @@ export const CuttingBoard: React.FC = () => {
           if (!hasItem) return;
           if (isDefined(cuttingBoardSlot.item) && cuttingBoardSlot.item.choppedProgress >= 100)
             return;
-          if (Math.random() > 0.5) playKnifeSound1({});
-          else playKnifeSound2();
+          playChopSound();
           increaseChopProgress();
         }}
       >
@@ -62,10 +46,43 @@ export const CuttingBoard: React.FC = () => {
   );
 };
 
-const NOT_CHOPPABLE_ITEMS = new Set<ItemId>([ItemId.CAMPFIRE_POT, ItemId.BOWL_OF_SOUP]);
+/**
+ * @returns A function that plays a random chopping sound effect
+ */
+const usePlayChopSound = () => {
+  const [playKnifeSound1] = useSound(knifeSound1);
+  const [playKnifeSound2] = useSound(knifeSound2);
 
+  return useCallback(() => {
+    if (Math.random() > 0.5) {
+      playKnifeSound1({});
+    } else {
+      playKnifeSound2();
+    }
+  }, [playKnifeSound1, playKnifeSound2]);
+};
+
+/**
+ * Helper function to determine if an item can be chopped on the cutting board
+ * @param itemStack The item stack to check
+ * @returns true if the item can be chopped, false otherwise
+ */
 const itemCanBeChopped = (itemStack: ItemStack): boolean => {
   const item = itemStack.item;
   if (item === null) return false;
-  return !NOT_CHOPPABLE_ITEMS.has(item.itemId);
+  const staticProperties = STATIC_ITEM_PROPERTIES[item.itemId];
+  return staticProperties.choppable;
+};
+
+const increaseChopProgress = () => {
+  const cuttingBoardItemStack = useDungeonHavinnStore.getState().cuttingBoard;
+  const addChopProgress = (item: Item) => ({
+    ...item,
+    choppedProgress: Math.min(100, (cuttingBoardItemStack.item?.choppedProgress || 0) + 10),
+  });
+  const newCuttingBoardSlot = ItemStackUtils.updateItemInStack(
+    cuttingBoardItemStack,
+    addChopProgress,
+  );
+  useDungeonHavinnStore.setState(() => ({ cuttingBoard: newCuttingBoardSlot }));
 };
