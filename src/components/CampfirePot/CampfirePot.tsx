@@ -8,11 +8,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { isDefined } from '../../utils';
-
+import { STATIC_ITEM_PROPERTIES } from '../../constants/items';
+import { ItemTag } from '../../constants/ItemTag';
 const selectCampfirePot = (store: DungeonHavinnState) => store.campfirePotSlot;
 
 export const CampfirePot = () => {
   const campfirePotSlot = useDungeonHavinnStore(selectCampfirePot);
+  const isHeatable =
+    campfirePotSlot.item !== null &&
+    STATIC_ITEM_PROPERTIES[campfirePotSlot.item?.itemId]?.tags.has(ItemTag.HEATABLE);
   const [cooking, setCooking] = useState(false);
 
   /**
@@ -55,7 +59,9 @@ export const CampfirePot = () => {
           }}
           slotId="campfire-pot"
         />
-        {cooking && <CircularProgress color="warning" disableShrink sx={styles.loadingOverlay} />}
+        {cooking && isHeatable && (
+          <CircularProgress color="warning" disableShrink sx={styles.loadingOverlay} />
+        )}
       </Box>
 
       <Button color="error" onClick={() => setCooking((old) => !old)}>

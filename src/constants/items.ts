@@ -1,4 +1,5 @@
 import type { EnumOf } from '../utils';
+import { ItemTag } from './ItemTag';
 
 export const ITEM_STACK_WIDTH = 80;
 
@@ -18,34 +19,34 @@ type StaticItemProperties = {
   description: string;
   /** In seconds */
   chopTime: number;
-  /** If true, the item can be chopped when placed on the cutting board */
-  choppable: boolean;
+
+  tags: Set<ItemTag>;
 };
 
 export const STATIC_ITEM_PROPERTIES: Record<ItemId, StaticItemProperties> = {
   [ItemId.MUSHROOM]: {
     description: 'A magical mushroom that grows in the dark.',
     chopTime: 2,
-    choppable: true,
+    tags: new Set([ItemTag.CHOPPABLE, ItemTag.INGREDIENT]),
   },
   [ItemId.ONION]: {
     description: 'A pungent onion used for cooking.',
     chopTime: 3,
-    choppable: true,
+    tags: new Set([ItemTag.CHOPPABLE, ItemTag.INGREDIENT]),
   },
   [ItemId.GARLIC]: {
     description: 'A strong-smelling bulb used for flavoring.',
     chopTime: 4,
-    choppable: true,
+    tags: new Set([ItemTag.CHOPPABLE, ItemTag.INGREDIENT]),
   },
   [ItemId.CAMPFIRE_POT]: {
     description: 'A pot used for cooking over a campfire.',
     chopTime: Number.POSITIVE_INFINITY,
-    choppable: false,
+    tags: new Set([ItemTag.HEATABLE]),
   },
   [ItemId.BOWL_OF_SOUP]: {
     description: 'Yummy food',
     chopTime: Number.POSITIVE_INFINITY,
-    choppable: false,
+    tags: new Set([]),
   },
 };

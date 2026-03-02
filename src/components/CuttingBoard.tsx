@@ -10,6 +10,7 @@ import { ItemStackUtils, type ItemStack } from '../classes/ItemStack';
 import { STATIC_ITEM_PROPERTIES } from '../constants/items';
 import { useCallback } from 'react';
 import type { Item } from '../classes/Item';
+import { ItemTag } from '../constants/ItemTag';
 
 const selectCuttingBoardSlot = (state: DungeonHavinnState) => state.cuttingBoard;
 
@@ -71,7 +72,7 @@ const itemCanBeChopped = (itemStack: ItemStack): boolean => {
   const item = itemStack.item;
   if (item === null) return false;
   const staticProperties = STATIC_ITEM_PROPERTIES[item.itemId];
-  return staticProperties.choppable;
+  return staticProperties.tags.has(ItemTag.CHOPPABLE);
 };
 
 const increaseChopProgress = () => {
