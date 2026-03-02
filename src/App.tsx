@@ -59,11 +59,13 @@ function App() {
   };
   return (
     <DndContext onDragEnd={handleDragEnd} sensors={sensors} modifiers={[restrictToWindowEdges]}>
-      <Box display="flex" alignItems="end">
-        <Pantry />
-        <CuttingBoard />
-        <CampfirePot />
-        <WaterSpout />
+      <Box sx={styles.gameViewport}>
+        <Box sx={styles.cookingScreen}>
+          <Pantry />
+          <CuttingBoard />
+          <CampfirePot />
+          <WaterSpout />
+        </Box>
       </Box>
       <LittleChef />
       <Credits />
@@ -72,3 +74,21 @@ function App() {
 }
 
 export default App;
+
+const styles = {
+  gameViewport: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100vw',
+    height: '100vh',
+    alignItems: 'center',
+    padding: 2,
+  },
+  cookingScreen: {
+    display: 'flex',
+    width: 'fit-content',
+    alignItems: 'end',
+    border: '2px solid black',
+    padding: 2,
+  },
+};
