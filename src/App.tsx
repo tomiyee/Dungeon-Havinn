@@ -21,42 +21,6 @@ function App() {
     }),
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    if (!event.over) {
-      return;
-    }
-
-    const activeData = event.active.data.current as DraggableData | undefined;
-    const dropData = event.over.data.current as DroppableData | undefined;
-
-    if (dropData === undefined) {
-      console.warn('No drop data');
-      return;
-    }
-    if (activeData === undefined) {
-      console.warn('No active data');
-      return;
-    }
-    if (!dropData.canReceiveItemStack(activeData.itemStack)) {
-      return;
-    }
-
-    const combine = dropData.combineItems ?? ItemStackUtils.combine;
-
-    const combinationResult = combine(
-      activeData.itemStack,
-      dropData.itemStack,
-      dropData.maxCapacity,
-    );
-
-    if (combinationResult === null) {
-      return;
-    }
-    const { remainingStack, resultStack } = combinationResult;
-
-    activeData.setItemStack(remainingStack);
-    dropData.setItemStack(resultStack);
-  };
   return (
     <DndContext onDragEnd={handleDragEnd} sensors={sensors} modifiers={[restrictToWindowEdges]}>
       <Box sx={styles.gameViewport}>
@@ -91,4 +55,37 @@ const styles = {
     border: '2px solid black',
     padding: 2,
   },
+};
+
+const handleDragEnd = (event: DragEndEvent) => {
+  if (!event.over) {
+    return;
+  }
+
+  const activeData = event.active.data.current as DraggableData | undefined;
+  const dropData = event.over.data.current as DroppableData | undefined;
+
+  if (dropData === undefined) {
+    console.warn('No drop data');
+    return;
+  }
+  if (activeData === undefined) {
+    console.warn('No active data');
+    return;
+  }
+  if (!dropData.canReceiveItemStack(activeData.itemStack)) {
+    return;
+  }
+
+  const combine = dropData.combineItems ?? ItemStackUtils.combine;
+
+  const combinationResult = combine(activeData.itemStack, dropData.itemStack, dropData.maxCapacity);
+
+  if (combinationResult === null) {
+    return;
+  }
+  const { remainingStack, resultStack } = combinationResult;
+
+  activeData.setItemStack(remainingStack);
+  dropData.setItemStack(resultStack);
 };

@@ -79,14 +79,8 @@ export const ItemStackDisplay = (props: ItemStackDisplayProps) => {
           sx={{ pointerEvents: 'none' }}
           id={popoverId}
           anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           onClose={handlePopoverClose}
           disableRestoreFocus
         >
