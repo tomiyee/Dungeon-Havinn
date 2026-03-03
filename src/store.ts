@@ -30,7 +30,7 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set, get) => ({
     [ItemId.ONION]: 'Onion',
     [ItemId.GARLIC]: 'Garlic',
     [ItemId.CAMPFIRE_POT]: null,
-    [ItemId.BOWL_OF_SOUP]: null,
+    [ItemId.BOWL]: 'Bowl',
   },
 
   waterSpoutSlot: ItemStackUtils.newEmpty(),
@@ -45,7 +45,7 @@ export const useDungeonHavinnStore = create<DungeonHavinnState>((set, get) => ({
     ItemStackUtils.newEmpty(),
     ItemStackUtils.newEmpty(),
     ItemStackUtils.newEmpty(),
-    ItemStackUtils.newEmpty(),
+    ItemStackUtils.new(ItemUtils.new(ItemId.BOWL), 1),
   ],
 
   cuttingBoard: ItemStackUtils.newEmpty(),

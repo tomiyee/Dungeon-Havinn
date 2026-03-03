@@ -80,6 +80,6 @@ export class RecipeUtils {
     }
     // If you heated a pot with no water, create
 
-    return ItemStackUtils.new(ItemUtils.new(ItemId.BOWL_OF_SOUP, recipe));
+    return ItemStackUtils.new(ItemUtils.new(ItemId.BOWL, recipe));
   }
 }

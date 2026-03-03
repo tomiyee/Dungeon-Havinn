@@ -16,13 +16,10 @@ export type Item = {
 };
 
 export class ItemUtils {
-  static new(itemId: ItemId, recipe?: Recipe): Item {
-    if (itemId === ItemId.BOWL_OF_SOUP && recipe === undefined) {
-      throw new Error(`Item ${ItemId.BOWL_OF_SOUP} was created without a recipe`);
-    }
+  static new(itemId: ItemId): Item {
     return {
       itemId,
-      recipe,
+      recipe: undefined,
       choppedProgress: 0,
       boiledProgress: 0,
       watered: false,
@@ -52,6 +49,8 @@ export class ItemUtils {
         return ItemIcon.MUSHROOM;
       case ItemId.ONION:
         return ItemIcon.ONION;
+      case ItemId.BOWL:
+        return item.recipe ? ItemIcon.BOWL_FILLED : ItemIcon.BOWL_EMPTY;
       default:
         return '';
     }
@@ -92,7 +91,7 @@ export class ItemUtils {
       case ItemId.GARLIC: {
         return 'Stinky bulb';
       }
-      case ItemId.BOWL_OF_SOUP: {
+      case ItemId.BOWL: {
         return 'Yummy food';
       }
       default:

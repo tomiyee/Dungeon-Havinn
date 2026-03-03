@@ -148,7 +148,6 @@ export class ItemStackUtils {
       throw new Error(`Attempted to split stack ${itemStack} into a stack with ${quantity}.`);
     }
     const remainingStack = ItemStackUtils.subtract(itemStack, quantity);
-    console.log(remainingStack);
     // The remaining stack
     const resultStack = ItemStackUtils.clone(itemStack);
     resultStack.quantity = quantity;

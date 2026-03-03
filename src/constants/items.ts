@@ -9,8 +9,8 @@ export const ItemId = {
   GARLIC: 'GARLIC',
   // Special Items
   CAMPFIRE_POT: 'CAMPFIRE_POT',
-  /** A bowl with food in it after having cooked from the pot */
-  BOWL_OF_SOUP: 'BOWL_OF_SOUP',
+  /** A bowl possibly with soup */
+  BOWL: 'BOWL',
 } as const;
 
 export type ItemId = EnumOf<typeof ItemId>;
@@ -44,8 +44,8 @@ export const STATIC_ITEM_PROPERTIES: Record<ItemId, StaticItemProperties> = {
     chopTime: Number.POSITIVE_INFINITY,
     tags: new Set([ItemTag.HEATABLE]),
   },
-  [ItemId.BOWL_OF_SOUP]: {
-    description: 'Yummy food',
+  [ItemId.BOWL]: {
+    description: 'Holds yummy food',
     chopTime: Number.POSITIVE_INFINITY,
     tags: new Set([]),
   },
