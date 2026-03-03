@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { isDefined } from '../../utils';
-import { STATIC_ITEM_PROPERTIES } from '../../constants/items';
+import { ItemId, STATIC_ITEM_PROPERTIES } from '../../constants/items';
 import { ItemTag } from '../../constants/ItemTag';
 const selectCampfirePot = (store: DungeonHavinnState) => store.campfirePotSlot;
 
@@ -24,12 +24,16 @@ export const CampfirePot = () => {
    */
   const onAddIngredient = useCallback(
     (incomingItemStack: ItemStack) => {
-      if (isDefined(incomingItemStack.item) && isDefined(campfirePotSlot.item)) {
+      const incomingItem = incomingItemStack.item;
+      if (!isDefined(incomingItem)) {
+        useDungeonHavinnStore.setState({ campfirePotSlot: incomingItemStack });
+        return;
+      }
+      const incomingItemProperties = STATIC_ITEM_PROPERTIES[incomingItem.itemId];
+      const isIngredient = incomingItemProperties.tags.has(ItemTag.INGREDIENT);
+      if (campfirePotSlot.item?.itemId === ItemId.CAMPFIRE_POT && isIngredient) {
         campfirePotSlot.item.recipe ??= [];
-        campfirePotSlot.item.recipe?.push({
-          type: 'ingredient',
-          ingredient: incomingItemStack.item,
-        });
+        campfirePotSlot.item.recipe?.push({ type: 'ingredient', ingredient: incomingItem });
         useDungeonHavinnStore.setState({ campfirePotSlot: campfirePotSlot });
         return;
       }
