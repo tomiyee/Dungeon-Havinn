@@ -1,40 +1,50 @@
-# CLAUDE.md
+# Dungeon Havinn
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+A React application featuring drag and drop mechanics using @dnd-kit and Material UI.
 
-## Development Setup
+## Tech Stack
 
-This is a React + TypeScript + Vite project with the following key dependencies:
+- React 18 + TypeScript
+- @dnd-kit/core - Drag and drop
+- Material UI - UI components
+- Vite - Build tool
 
-- React 19.2.0
-- TypeScript 5.9.3
-- Vite 7.2.4
-- @dnd-kit/core 6.3.1 for drag and drop functionality
-- @mui/material 7.3.7 for UI components
-- Zustand 5.0.10 for state management
+## Project Structure
 
-### Commands
+```
+src/
+├── components/
+│   ├── DraggableImage.tsx   # Draggable image with local styles
+│   └── Credits.tsx          # Attribution dialog
+├── constants/
+│   └── index.ts             # Shared constants (CANVAS_WIDTH, CANVAS_HEIGHT)
+├── types/
+│   └── index.ts             # Shared type definitions
+├── App.tsx                  # Main app component
+├── main.tsx                 # Entry point
+└── utils.ts                 # Utilities
+```
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
-- `npm run preview` - Preview production build
+## Components
 
-## Codebase Structure
+- **App** - Manages drag state and canvas layout
+- **DraggableImage** - Individual draggable image
+- **Credits** - Modal for asset attribution
 
-The project follows a component-based architecture with:
+## Architecture
 
-- `src/App.tsx` - Main application component with DnD context
-- `src/components/` - React components organized by feature
-- `src/assets/` - Static assets including mushroom.png
-- `src/constants/` - Constants and configuration
-- `src/hooks/` - Custom React hooks
-- `src/store/` - State management with Zustand
+- Constants used by only one component are defined locally
+- Shared constants (`CANVAS_WIDTH`, `CANVAS_HEIGHT`) remain in `constants/index.ts`
+- All components use TypeScript with shared types from `types/index.ts`
 
-The main drag and drop functionality is implemented using @dnd-kit, with the DndContext configured in App.tsx and components using useDraggable for draggable elements.
+## Key Features
 
-The CuttingBoard component demonstrates how to create a draggable element with an image asset.
+- Drag and drop with @dnd-kit
+- Dynamic image addition with random positioning
+- Credits modal for asset attribution
 
-## Testing
+## Asset Attribution
 
-Do not test using npm start.
+- Icons: Freepik - freepik.com
+- Sound: Pixabay - pixabay.com
+- Images: Custom (mushroom.png)

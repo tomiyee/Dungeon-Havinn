@@ -13,3 +13,7 @@ export const assertUnreachable = (value: never) => {
 export type EnumOf<T> = T[keyof T];
 
 export const EMPTY_ARRAY = Object.freeze([]) as never[];
+
+export const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max);
+};
