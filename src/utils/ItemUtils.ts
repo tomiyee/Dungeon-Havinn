@@ -19,6 +19,10 @@ export class ItemUtils {
         return ItemIcon.MUSHROOM;
       case ItemId.PLATE:
         return ItemIcon.PLATE;
+      case ItemId.GARLIC:
+        return ItemIcon.GARLIC;
+      case ItemId.ONION:
+        return ItemIcon.ONION;
       default:
         return assertUnreachable(item.itemId);
     }
@@ -27,6 +31,8 @@ export class ItemUtils {
   static getItemSize(item: Item): number {
     switch (item.itemId) {
       case ItemId.MUSHROOM:
+      case ItemId.ONION:
+      case ItemId.GARLIC:
         return 50;
       case ItemId.PLATE:
         return 160;

@@ -5,7 +5,7 @@ import { ItemId } from '../constants/ItemId';
 
 const plate = ItemUtils.newItem(ItemId.PLATE, { x: 100, y: 100 });
 
-type GameState = {
+export type GameState = {
   /** Map of object ID to position */
   objects: Record<string, Item>;
 
@@ -17,13 +17,16 @@ type GameState = {
 
   /** Update the position of an object */
   updateObject: (id: string, position: { x: number; y: number }) => void;
+
+  /** Get all objects that overlap with the given hitbox */
+  getOverlappingObjects: (x: number, y: number, width: number, height: number) => Item[];
 };
 
 /**
  * Zustand store for managing game object positions
  * Stores all objects in a Record<string, Item> for O(1) lookups
  */
-export const useGameStore = create<GameState>((set) => ({
+export const useGameStore = create<GameState>((set, get) => ({
   objects: {
     [plate.id]: plate,
   },
@@ -52,4 +55,17 @@ export const useGameStore = create<GameState>((set) => ({
         },
       },
     })),
+
+  getOverlappingObjects: (hitboxX, hitboxY, hitboxWidth, hitboxHeight) => {
+    return Object.values(get().objects).filter((obj) => {
+      const size = ItemUtils.getItemSize(obj);
+      // AABB collision detection: check if two rectangles overlap
+      return (
+        obj.position.x < hitboxX + hitboxWidth &&
+        obj.position.x + size > hitboxX &&
+        obj.position.y < hitboxY + hitboxHeight &&
+        obj.position.y + size > hitboxY
+      );
+    });
+  },
 }));
